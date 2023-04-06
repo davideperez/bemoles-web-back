@@ -3,22 +3,22 @@
 //////////////////////////////
 
 const express = require('express');
-const { httpGetAllTalleres } = require('./talleres.controller')
+const { httpGetAllEventos } = require('./eventos.controller')
 
 //////////////////////////////
 // varaibles & constants
 //////////////////////////////
 
-const talleresRouter = express.Router()
+const eventosRouter = express.Router()
 
 //////////////////////////////
 // Behaviours
 //////////////////////////////
 
-talleresRouter.get('/', httpGetAllTalleres);
+eventosRouter.get('/', httpGetAllEventos);
 
 //////////////////////////////
 // Exports
 //////////////////////////////
 
-module.exports = talleresRouter;
+module.exports = eventosRouter;

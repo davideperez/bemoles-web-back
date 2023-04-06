@@ -2,7 +2,7 @@
 // Imports
 //////////////////////////////
 
-const { getAllTalleres } = require('../../models/talleres.model');
+const { getAllEventos } = require('../../models/eventos.model');
 
 //////////////////////////////
 // varaibles & constants
@@ -14,8 +14,8 @@ const { getAllTalleres } = require('../../models/talleres.model');
 // Behaviours
 //////////////////////////////
 
-async function httpGetAllTalleres(req, res) {
-    return res.status(200).json(await getAllTalleres);
+async function httpGetAllEventos(req, res) {
+    return res.status(200).json(await getAllEventos);
 };
 
 //////////////////////////////
@@ -23,5 +23,5 @@ async function httpGetAllTalleres(req, res) {
 //////////////////////////////
 
 module.exports = {
-    httpGetAllTalleres,
+    httpGetAllEventos,
 };

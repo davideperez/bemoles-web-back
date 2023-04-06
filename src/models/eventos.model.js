@@ -1,0 +1,33 @@
+//////////////////////////////
+// Imports
+//////////////////////////////
+const eventos = require('./eventos.mongo')
+
+//////////////////////////////
+// Varaibles & Constants
+//////////////////////////////
+
+//////////////////////////////
+// Behaviours
+//////////////////////////////
+
+//getAllEventos
+async function getAllEventos () {
+    return eventos
+} //TODO
+
+// addEvento
+async function addEvento () {} //TODO
+
+//deleteEventos
+async function deleteEventoById () {} //TODO
+
+//////////////////////////////
+// Exports
+//////////////////////////////
+
+module.exports = {
+    getAllEventos,
+    addEvento,
+    deleteEventoById
+}

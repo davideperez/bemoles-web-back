@@ -3,7 +3,7 @@
 //////////////////////////////
 
 const express = require('express');
-const talleresRouter = require('./talleres/talleres.router')
+const eventosRouter = require('./eventos/eventos.router')
 
 //////////////////////////////
 // Varaibles & Constants
@@ -15,7 +15,7 @@ const api = express.Router();
 // Routes
 //////////////////////////////
 
-api.use('/talleres', talleresRouter);
+api.use('/eventos', eventosRouter);
 
 //////////////////////////////
 // Exports

@@ -31,11 +31,41 @@ app.use(express.json())
 
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-app.use('/v1', api);
+///////////////////////////
+// Routes Public
+///////////////////////////
 
+app.use('/v1', api); // 
+
+// /
 app.use('/*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'))
+    res.sendFile(path.join(__dirname, 'public', 'index.html')) // esto es llamado al front.
 })
 
+// /Posibilidades TODO
+
+// /Consultorios TODO
+
+// /Sum - Arte TODO
+
+// /Estudio y Sala de Ensayo TODO
+
+// /Talleres TODO
+
+// /Cartelera TODO
+
+///////////////////////////
+// Routes Admin
+///////////////////////////
+
+// /Eventos (Cartelera) TODO
+
+// /Talleres (Agregar Talleres) TODO
+
+// /Proyectos (Agragar Proyectos) TODO
+
+///////////////////////////
+// Exports
+///////////////////////////
 
 module.exports = app;

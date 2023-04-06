@@ -1,0 +1,32 @@
+// SOLVED!!!!
+
+Date: 2023-Abr-06 2.56 am.
+
+pc01user@pc01:~/Documents/projects/bemoles-web-back$ npm install mongoose
+npm WARN EBADENGINE Unsupported engine {
+npm WARN EBADENGINE   package: 'mongoose@7.0.3',
+npm WARN EBADENGINE   required: { node: '>=14.0.0' },
+npm WARN EBADENGINE   current: { node: 'v12.22.9', npm: '8.5.1' }
+npm WARN EBADENGINE }
+npm WARN EBADENGINE Unsupported engine {
+npm WARN EBADENGINE   package: 'bson@5.2.0',
+npm WARN EBADENGINE   required: { node: '>=14.20.1' },
+npm WARN EBADENGINE   current: { node: 'v12.22.9', npm: '8.5.1' }
+npm WARN EBADENGINE }
+npm WARN EBADENGINE Unsupported engine {
+npm WARN EBADENGINE   package: 'mongodb@5.1.0',
+npm WARN EBADENGINE   required: { node: '>=14.20.1' },
+npm WARN EBADENGINE   current: { node: 'v12.22.9', npm: '8.5.1' }
+npm WARN EBADENGINE }
+npm WARN EBADENGINE Unsupported engine {
+npm WARN EBADENGINE   package: 'mquery@5.0.0',
+npm WARN EBADENGINE   required: { node: '>=14.0.0' },
+npm WARN EBADENGINE   current: { node: 'v12.22.9', npm: '8.5.1' }
+npm WARN EBADENGINE }
+
+added 24 packages, and audited 85 packages in 14s
+
+8 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities

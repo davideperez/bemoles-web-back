@@ -12,8 +12,8 @@ const cors = require('cors');
 ///////////////////////////
 
 const app = require('./app');
-//const {mongoConnect } = require('./services/mongo) // TODO
-//const { loadTalleresData } = require('models/talleres.model');
+const { mongoConnect } = require('./services/mongo') //TODO
+//const { loadEventosData } = require('models/eventos.model');
 
 ///////////////////////////
 // Server Constants Setup
