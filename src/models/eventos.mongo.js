@@ -25,7 +25,7 @@ const eventosSchema = new mongoose.Schema({
         type: String,
     },
     flyer: {
-        type: Buffer, // Este escenario es nuevo. Deberia aceptar un jpg.(?) Supuestamente omngodb atlas convierte el jpeg en BJSON.
+        type: String, // TODO: Updetear de String a Buffer y ver como se implementa. Este escenario es nuevo. Deberia aceptar un jpg.(?) Supuestamente omngodb atlas convierte el jpeg en BJSON.
     },
     info: {
         type: String,
@@ -55,12 +55,12 @@ const eventosSchema = new mongoose.Schema({
 //TODO: Esta funcionalidad iria aca???s
 function isURL(url) {
     return validator.isURL(url);
-  }
+}
 
-  
+
 //////////////////////////////
 // Exports
 //////////////////////////////
 
 
-module.exports = {}
+module.exports = mongoose.model('Evento',eventosSchema) // TOCHECK: probar si esta linea se puede poner en una funcion aparte y poenr la funcion como export en module.exports.

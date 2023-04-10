@@ -15,7 +15,7 @@ const { getAllEventos } = require('../../models/eventos.model');
 //////////////////////////////
 
 async function httpGetAllEventos(req, res) {
-    return res.status(200).json(await getAllEventos);
+    return res.status(200).json(await getAllEventos()); // aca no iria un response.send(getAllEventos)
 };
 
 //////////////////////////////

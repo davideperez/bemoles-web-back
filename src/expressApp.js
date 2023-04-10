@@ -10,37 +10,43 @@ const cors = require('cors')
 // Imports Propetary
 ///////////////////////////
 
-const api = require('./routes/api');
+const apiExpressRouter = require('./routes/apiExpressRouter');
 
 /////////////////////
 // App Setup
 /////////////////////
 
-const app = express();
+
+const expressApp = express();
 
 
 ///////////////////////////
 // Middleware
 ///////////////////////////
 
-app.use(cors({
+
+expressApp.use(cors({
     origin: 'http://localhost:3000',
 }));
 
-app.use(express.json())
+expressApp.use(express.json())
 
-app.use(express.static(path.join(__dirname, '..', 'public')));
+expressApp.use(express.static(path.join(__dirname, '..', 'public')));
+
 
 ///////////////////////////
 // Routes Public
 ///////////////////////////
 
-app.use('/v1', api); // 
 
-// /
-app.use('/*', (req, res) => {
+expressApp.use('/v1', apiExpressRouter); // 
+
+expressApp.use('/*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html')) // esto es llamado al front.
 })
+
+
+// expressApp.get('/*', apiExpressRouter) // invento de DAvid, a chequear jaj.
 
 // /Posibilidades TODO
 
@@ -68,4 +74,4 @@ app.use('/*', (req, res) => {
 // Exports
 ///////////////////////////
 
-module.exports = app;
+module.exports = expressApp;

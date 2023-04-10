@@ -9,16 +9,16 @@ const eventosRouter = require('./eventos/eventos.router')
 // Varaibles & Constants
 //////////////////////////////
 
-const api = express.Router();
+const apiExpressRouter = express.Router();
 
 //////////////////////////////
 // Routes
 //////////////////////////////
 
-api.use('/eventos', eventosRouter);
+apiExpressRouter.use('/eventos', eventosRouter);
 
 //////////////////////////////
 // Exports
 //////////////////////////////
 
-module.exports = api;
+module.exports = apiExpressRouter; 

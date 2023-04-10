@@ -3,16 +3,15 @@
 ///////////////////////////
 
 const http = require('http');
-
 require('dotenv').config();
-const cors = require('cors');
 
 ///////////////////////////
-// Imports Propetary
+// Imports: Internal
 ///////////////////////////
 
-const app = require('./app');
+const expressApp = require('./expressApp');
 const { mongoConnect } = require('./services/mongo') //TODO
+
 //const { loadEventosData } = require('models/eventos.model');
 
 ///////////////////////////
@@ -21,13 +20,13 @@ const { mongoConnect } = require('./services/mongo') //TODO
 
 const PORT = process.env.PORT || 8000;
 
-const server = http.createServer(app);
+const server = http.createServer(expressApp);
 
 ///////////////////////////
 // Middleware
 ///////////////////////////
 
-
+//
 
 ///////////////////////////
 // Server Start Setup
@@ -35,7 +34,7 @@ const server = http.createServer(app);
 
 async function startServer() {
     
-    // await mongoConnect();
+    await mongoConnect();
     // await loadTalleresData();
     // await loadCursosData();
 
