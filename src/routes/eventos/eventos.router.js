@@ -3,7 +3,7 @@
 //////////////////////////////
 
 const express = require('express');
-const { httpGetAllEventos } = require('./eventos.controller')
+const { httpGetAllEventos, httpAddNewEvento } = require('./eventos.controller')
 
 //////////////////////////////
 // varaibles & constants
@@ -16,6 +16,8 @@ const eventosRouter = express.Router()
 //////////////////////////////
 
 eventosRouter.get('/', httpGetAllEventos);
+eventosRouter.post('/', httpAddNewEvento);
+
 
 //////////////////////////////
 // Exports

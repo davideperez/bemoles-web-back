@@ -22,7 +22,8 @@ const evento = {
 // Behaviours
 //////////////////////////////
 
-addEvento(evento)
+saveEventoInMongoDB(evento)
+
 console.log('Cupo Maximo:', evento.cupoMaixmo)
 
 //getAllEventos
@@ -34,18 +35,12 @@ async function getAllEventos () { //TODO
     }
 }
 
-// addEvento
-async function addEvento (evento) { //TODO
+// agrega o actualiza el evento a Mongo DB Atlas.
+
+async function saveEventoInMongoDB (evento) { //TODO
     try {
         await eventosDataBase.updateOne({ //TODO validar si la que conviene es eventos.create() o eventos.updateOne()
-            nombre: evento.nombre,
-/*          fecha: evento.fecha,
-            hora: evento.hora,
-            flyer: evento.flyer,
-            info: evento.info,
-            precio: evento.precio,
-            cupoMaixmo: evento.cupoMaixmo,
-            linkDePago: evento.linkDePago, */
+            nombre: evento.nombre, 
         }, evento, {
             upsert: true,
         }) 
@@ -53,6 +48,8 @@ async function addEvento (evento) { //TODO
         console.error(`No se pudo salvar el evento en la base de datos: ${err}`)
     }
 } 
+
+
 
 //deleteEventos
 async function deleteEventoById () { //TODO
@@ -65,6 +62,6 @@ async function deleteEventoById () { //TODO
 
 module.exports = {
     getAllEventos,
-    addEvento,
+    saveEventoInMongoDB,
     deleteEventoById
 }
