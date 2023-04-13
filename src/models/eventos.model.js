@@ -7,6 +7,8 @@ const eventosDataBase = require('./eventos.mongo')
 // Varaibles & Constants
 //////////////////////////////
 
+// MOCK
+
 const evento = {
     nombre: "Concierto de Piano en Burzaco 2",
     fecha: new Date('May 25, 2023'),
@@ -17,14 +19,11 @@ const evento = {
     cupoMaixmo: 800,
     linkDePago: 'https://www.mercadopago.com.ar',
 }
+saveEventoInMongoDB(evento)
 
 //////////////////////////////
 // Behaviours
 //////////////////////////////
-
-saveEventoInMongoDB(evento)
-
-console.log('Cupo Maximo:', evento.cupoMaixmo)
 
 //getAllEventos
 async function getAllEventos () { //TODO
@@ -48,8 +47,6 @@ async function saveEventoInMongoDB (evento) { //TODO
         console.error(`No se pudo salvar el evento en la base de datos: ${err}`)
     }
 } 
-
-
 
 //deleteEventos
 async function deleteEventoById () { //TODO

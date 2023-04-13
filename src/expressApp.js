@@ -17,7 +17,7 @@ const apiExpressRouter = require('./routes/apiExpressRouter');
 /////////////////////
 
 
-const expressApp = express();
+const expressApp = express(); // Esto es un servidor HTTP.
 
 
 ///////////////////////////
@@ -29,9 +29,9 @@ expressApp.use(cors({
     origin: 'http://localhost:3000',
 }));
 
-expressApp.use(express.json())
+expressApp.use(express.json()) // permite que los requests http lean jsons.
 
-expressApp.use(express.static(path.join(__dirname, '..', 'public')));
+expressApp.use(express.static(path.join(__dirname, '..', 'public'))); // este indica que la web se va a alojar en una carpeta fija?
 
 
 ///////////////////////////

@@ -15,9 +15,9 @@ const eventosRouter = express.Router()
 // Behaviours
 //////////////////////////////
 
-eventosRouter.get('/', httpGetAllEventos);
-eventosRouter.post('/', httpAddNewEvento);
+eventosRouter.get('/', httpGetAllEventos); // read.
 
+eventosRouter.post('/', httpAddNewEvento);
 
 //////////////////////////////
 // Exports

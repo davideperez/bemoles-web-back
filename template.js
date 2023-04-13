@@ -29,15 +29,17 @@ module.exports = {
 
 
 /* 
-server.js
+server.js  // NODEJS http (es windows)
 
-expressApp.js
+expressApp.js // EXPRESS (es photshop)
 
-apiExpress.js
+apiExpress.js // express.Router() (es crear un circulo)
 
-eventos.routes.js
+eventos.routes.js // express.Router()
 
 eventos.controller.js
+
+eventos.interactor.js
 
 eventos.model.js
     
@@ -56,3 +58,24 @@ require('http')
 })
 
 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Endpoint para hacer CRUD en db eventos.
+
+// Endpoint para hacer CRUD en db taller y cursos.
+// Endpoint para hacer CRUD en db proyectos
+// login con o sin passport. http only cookies. 
+// logica del mail.
+    // body de mails (pedir a Dani.)
+// agregar swager, libreria para documentar. 

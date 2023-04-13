@@ -1,3 +1,5 @@
+//TODO: leer sobre el pattern interactor para hacer agnositoc los .controller.js y los .model.js
+
 //////////////////////////////
 // Imports
 //////////////////////////////
