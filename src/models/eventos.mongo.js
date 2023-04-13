@@ -14,6 +14,14 @@ const validator = require('validator');
 
 const eventosSchema = new mongoose.Schema({
     //TODO: Validar cuales de estos campos son required.
+    //TODO: Armar types propios, ej type evento (type object)
+    /*
+    ejemplo: 
+        type: { type: String, enum: ['PRODUCT', 'TEMPLATE', 'USER', 'WORLD'], },
+    */
+
+
+
     nombre: {
         type: String,
         required: true,
@@ -25,7 +33,7 @@ const eventosSchema = new mongoose.Schema({
         type: String,
     },
     flyer: {
-        type: String, // TODO: Updetear de String a Buffer y ver como se implementa. Este escenario es nuevo. Deberia aceptar un jpg.(?) Supuestamente omngodb atlas convierte el jpeg en BJSON.
+        type: String, // usariamos una URL.
     },
     info: {
         type: String,
