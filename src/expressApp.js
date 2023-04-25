@@ -5,6 +5,7 @@
 const  express = require('express');
 const path = require('path');
 const cors = require('cors')
+const morgan = require('morgan')
 
 ///////////////////////////
 // Imports Propetary
@@ -24,13 +25,19 @@ const expressApp = express(); // Esto es un servidor HTTP.
 // Middleware
 ///////////////////////////
 
-
+//Security
 expressApp.use(cors({
     origin: 'http://localhost:3000',
 }));
 
+
+//Logs
+app.use(morgan('combined'));
+
+//Reading Tools
 expressApp.use(express.json()) // permite que los requests http lean jsons.
 
+//??
 expressApp.use(express.static(path.join(__dirname, '..', 'public'))); // este indica que la web se va a alojar en una carpeta fija?
 
 

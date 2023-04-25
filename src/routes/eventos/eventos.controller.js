@@ -15,8 +15,6 @@ const eventosMongo = require('../../models/eventos.mongo');
 // sub-Behaviours
 //////////////////////////////
 
-
-
 //////////////////////////////
 // Behaviours
 //////////////////////////////
@@ -49,11 +47,13 @@ async function httpAddNewEvento(req, res) {
     return res.status(201).json(evento); // Esto es un check para POSTMAN???? TODO
 };
 
-
-
 //////////////////////////////
 // Exports
 //////////////////////////////
+
+function sumarCosas () {
+
+}
 
 module.exports = {
     httpGetAllEventos,
