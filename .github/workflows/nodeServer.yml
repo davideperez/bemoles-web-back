@@ -17,6 +17,7 @@ jobs:
         USERNAME: ${{ secrets.USERNAME }}
         PORT: ${{ secrets.PORT }}
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        PASSWORD: ${{secrets.PASSWORD}}
       with:
         source: "."
         target: "/var/www/bemoles-web-back"
@@ -28,4 +29,5 @@ jobs:
         USERNAME: ${{ secrets.USERNAME }}
         PORT: ${{ secrets.PORT }}
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        PASSWORD: ${{secrets.PASSWORD}}
         script: ls
