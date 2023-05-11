@@ -4,6 +4,7 @@
 
 const http = require('http');
 require('dotenv').config();
+const bcrypt = require('bcrypt')
 
 ///////////////////////////
 // Imports: Internal
