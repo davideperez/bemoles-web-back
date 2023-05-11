@@ -19,7 +19,7 @@ jobs:
     #  run: npm run build
       
     - name: Deploy server
-      run: |
+      run:
         ssh root@212.1.214.231 "cd /var/www/your/bemoles-web-back && git pull origin main && npm install && pm2 restart server"
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
