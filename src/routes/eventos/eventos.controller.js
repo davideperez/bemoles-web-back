@@ -4,8 +4,8 @@
 // Imports
 //////////////////////////////
 
-const { getAllEventos, saveEventoInMongoDB } = require('../../models/eventos.model');
-const eventosMongo = require('../../models/eventos.mongo');
+const { getAllEventos, saveEventoInMongoDB } = require('../../models/eventos/eventos.model');
+const eventosMongo = require('../../models/eventos/eventos.mongo');
 
 //////////////////////////////
 // varaibles & constants

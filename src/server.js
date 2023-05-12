@@ -1,37 +1,23 @@
-///////////////////////////
-// Imports
-///////////////////////////
+//-----------------------------------------------------------------------------------------------------//
+// Imports (Native) //
+//-----------------------------------------------------------------------------------------------------//
 
-const http = require('http');
 require('dotenv').config();
+const http = require('http');
 const bcrypt = require('bcrypt')
 
-///////////////////////////
-// Imports: Internal
-///////////////////////////
+//Imports (Propertary)
 
-const expressApp = require('./expressApp');
+const app = require('./expressApp');
 const { mongoConnect } = require('./services/mongo') //TODO
-
 //const { loadEventosData } = require('models/eventos.model');
 
-///////////////////////////
-// Server Constants Setup
-///////////////////////////
+//-----------------------------------------------------------------------------------------------------//
+// Server Setup //
+//-----------------------------------------------------------------------------------------------------//
 
 const PORT = process.env.PORT || 8000;
-
-const server = http.createServer(expressApp);
-
-///////////////////////////
-// Middleware
-///////////////////////////
-
-//123456789-10-11
-
-///////////////////////////
-// Server Start Setup
-///////////////////////////
+const server = http.createServer(app);
 
 async function startServer() {
     
@@ -44,8 +30,8 @@ async function startServer() {
     });
 };
 
-///////////////////////////
-// Server Starter
-///////////////////////////
+//-----------------------------------------------------------------------------------------------------//
+//Server Start //
+//-----------------------------------------------------------------------------------------------------//
 
 startServer();

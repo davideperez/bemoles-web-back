@@ -1,123 +1,97 @@
-///////////////////////////
-// Imports
-///////////////////////////
-
-if (process.env.NODE_ENV !== 'production') { // ESTO VA CON ESTE IF?????
-    require('dotenv').config()
-}
+//-----------------------------------------------------------------------------------------------------//
+// Imports //
+//-----------------------------------------------------------------------------------------------------//
 
 const path = require('path');
 const cors = require('cors')
 const morgan = require('morgan')
 const bcrypt = require('bcrypt') // tuto de login
-const  express = require('express');
+const express = require('express');
 const passport = require('passport') // tuto de login
 const flash = require('express-flash') // tuto de login
 const session = require('express-session') // tuto de login
-const intitializePassport = require('./configs/passport.config') // tuto de login
+if (process.env.NODE_ENV !== 'production') { // ESTO VA CON ESTE IF?????
+    require('dotenv').config()
+}
 
-
-///////////////////////////
 // Imports Propetary
-///////////////////////////
 
 const apiExpressRouter = require('./routes/apiExpressRouter');
+const intitializePassport = require('./configs/passport.config') // tuto de login
 
-/////////////////////
-// App Setup
-/////////////////////
-
-const expressApp = express(); // Esto es un servidor HTTP.
-
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-////  TODELETE !!!!!!!!!!!!!!!!!! tutorial de login.
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-
-expressApp.set('view-engine', 'ejs')
+//-----------------------------------------------------------------------------------------------------//
+// Setups //
+//-----------------------------------------------------------------------------------------------------//
 
 const users = []
+const app = express(); // Esto es un servidor HTTP.
 
-// para que la data del form vaya a req.body de una forma x q no entendi.
-
-intitializePassport(
-    passport,
-    email => users.find(user => user.email === email),
-    id => users.find(user => user.id === id)
+intitializePassport( // login
+passport,
+email => users.find(user => user.email === email),
+id => users.find(user => user.id === id)
 )
-    
-    
-expressApp.use(express.urlencoded({extended: false}))
+app.set('view-engine', 'ejs') // login
 
-expressApp.use(flash())
+//-----------------------------------------------------------------------------------------------------//
+// Middleware //
+//-----------------------------------------------------------------------------------------------------//
 
-expressApp.use(session({
+// para que la data del form vaya a req.body de una forma x q no entendi.    
+app.use(express.urlencoded({extended: false})) // login
+
+app.use(flash()) // login
+
+app.use(session({ // login
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false
 }))     
 
-expressApp.use(passport.initialize())
-expressApp.use(passport.session())
-
-
-//////////////////////////////
-//////////////////////////////
-////fin de tuto de login.
-//////////////////////////////
-//////////////////////////////
-
-
-///////////////////////////
-// Middleware
-///////////////////////////
+app.use(passport.initialize()) // login
+app.use(passport.session()) // login
 
 //Security
-expressApp.use(cors({
+app.use(cors({
     origin: 'http://localhost:3000',
 }));
 
-
 //Logs
-expressApp.use(morgan('dev'));
+app.use(morgan('dev'));
 
 //Reading Tools
-expressApp.use(express.json()) // permite que los requests http lean jsons.
+app.use(express.json()) // permite que los requests http lean jsons.
 
 //??
-expressApp.use(express.static(path.join(__dirname, '..', 'public'))); // este indica que la web se va a alojar en una carpeta fija?
+app.use(express.static(path.join(__dirname, '..', 'public'))); // este indica que la web se va a alojar en una carpeta fija?
 
+//-----------------------------------------------------------------------------------------------------//
+// Routes (Public) //
+//-----------------------------------------------------------------------------------------------------//
 
-///////////////////////////
-// Routes Public
-///////////////////////////
+app.use('/v1', apiExpressRouter); // 
 
-
-expressApp.use('/v1', apiExpressRouter); // 
-
-expressApp.use('/*', isAuthenticated, (req, res) => {
+app.use('/*', isAuthenticated, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html')) // esto es llamado al front.
 })
 
 //ruta tutorial de login
 
-
-expressApp.get('/login', (req, res) => {
+app.get('/login', (req, res) => { //login
     res.render('/home/pc01user/Documents/projects/bemoles-web-back/public/views/login.ejs')
 })
 
-expressApp.post('/login', passport.authenticate('local', {
+app.post('/login', passport.authenticate('local', { //login
     successRedirect: '/',
     failureRedirect: '/login',
     failureFlash: true
 }))
 
-expressApp.get('/register', (req, res) => {
+app.get('/register', (req, res) => { //login
     res.render('/home/pc01user/Documents/projects/bemoles-web-back/public/views/register.ejs')
 })
 
-expressApp.post('/register', async (req, res) => {
+app.post('/register', async (req, res) => { //login
     try {
         // Recibe el pass ingresado, lo convierte a hash y lo guarda en var.
         const hashedPassword = await bcrypt.hash(req.body.password, 10) //10
@@ -139,7 +113,7 @@ expressApp.post('/register', async (req, res) => {
     console.log(users)
 })
 
-function isAuthenticated(req, res, next) {
+function isAuthenticated(req, res, next) { //login
     if (req.isAuthenticated()) {
         return next
     }
@@ -147,9 +121,7 @@ function isAuthenticated(req, res, next) {
     res.redirect('login')
 }
 
-////////////////Fin rutas tuto de login.
-
-// expressApp.get('/*', apiExpressRouter) // invento de DAvid, a chequear jaj.
+// app.get('/*', apiExpressRouter) // invento de DAvid, a chequear jaj.
 
 // /Posibilidades TODO
 
@@ -163,9 +135,10 @@ function isAuthenticated(req, res, next) {
 
 // /Cartelera TODO
 
-///////////////////////////
-// Routes Admin
-///////////////////////////
+//-----------------------------------------------------------------------------------------------------//
+// Routes (Admin) //
+//-----------------------------------------------------------------------------------------------------//
+
 
 // /Eventos (Cartelera) TODO
 
@@ -173,8 +146,9 @@ function isAuthenticated(req, res, next) {
 
 // /Proyectos (Agragar Proyectos) TODO
 
-///////////////////////////
-// Exports
-///////////////////////////
+//-----------------------------------------------------------------------------------------------------//
+//-----------------------------------------------------------------------------------------------------//
 
-module.exports = expressApp;
+// Exports
+
+module.exports = app;
