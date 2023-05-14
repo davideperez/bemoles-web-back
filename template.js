@@ -61,16 +61,6 @@ require('http')
 
 
 
-
-
-
-
-
-
-
-
-
-
 // Endpoint para hacer CRUD en db eventos.
 
 // Endpoint para hacer CRUD en db taller y cursos.

@@ -1,5 +1,13 @@
+//-----------------------------------------------------------------------------------------------------//
+// Imports //
+//-----------------------------------------------------------------------------------------------------//
+
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcrypt')
+
+//-----------------------------------------------------------------------------------------------------//
+// Behaviours //
+//-----------------------------------------------------------------------------------------------------//
 
 function intitialize(passport, getUserByEmail, getUserById) {
     
@@ -13,7 +21,7 @@ function intitialize(passport, getUserByEmail, getUserById) {
         }
 
         try {
-            //Si el password coincide, true, y el done devuelve el usuario.
+            //Si el password coincide, true y el done devuelve el usuario.
             if (await bcrypt.compare(password, user.password)) {
                 return done(null, user)
             } else {
@@ -26,15 +34,19 @@ function intitialize(passport, getUserByEmail, getUserById) {
     }
     
     //  1 esta linea crea la nueva estrategia local de authenticacion de usuarios. 
-
     passport.use(new LocalStrategy({usernameField: 'email'}, authenticateUser))
 
-    //???
+    //transformacion de la data del usuario a un archivo que se guarda en la session.
     passport.serializeUser((user, done) => done(null, user.id))
 
+    //consulta a la DB y se trae los datos del usuario
     passport.deserializeUser((id, done) => {
         return done(null, getUserById(id))
     })
 }
+
+//-----------------------------------------------------------------------------------------------------//
+// Exports //
+//-----------------------------------------------------------------------------------------------------//
 
 module.exports = intitialize

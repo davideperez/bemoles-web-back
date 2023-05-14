@@ -24,14 +24,18 @@ const intitializePassport = require('./configs/passport.config') // tuto de logi
 //-----------------------------------------------------------------------------------------------------//
 
 const users = []
+
 const app = express(); // Esto es un servidor HTTP.
 
 intitializePassport( // login
-passport,
-email => users.find(user => user.email === email),
-id => users.find(user => user.id === id)
+    passport,
+    email => users.find(user => user.email === email),
+    id => users.find(user => user.id === id)
 )
-app.set('view-engine', 'ejs') // login
+
+//app.set('views', path.join(__dirname, '..', 'public','views')) // login
+
+app.set('view engine', 'ejs') // login
 
 //-----------------------------------------------------------------------------------------------------//
 // Middleware //
@@ -46,9 +50,10 @@ app.use(session({ // login
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false
-}))     
+}))
 
 app.use(passport.initialize()) // login
+
 app.use(passport.session()) // login
 
 //Security
@@ -63,32 +68,37 @@ app.use(morgan('dev'));
 app.use(express.json()) // permite que los requests http lean jsons.
 
 //??
-app.use(express.static(path.join(__dirname, '..', 'public'))); // este indica que la web se va a alojar en una carpeta fija?
+app.use(express.static(path.join(__dirname, '..', 'public', 'views'))); // Esta linea es para que express pueda devolvet a los get, files estaticos. ejs html.
+
 
 //-----------------------------------------------------------------------------------------------------//
 // Routes (Public) //
 //-----------------------------------------------------------------------------------------------------//
 
-app.use('/v1', apiExpressRouter); // 
+app.use('/v1', apiExpressRouter); //
 
-app.use('/*', isAuthenticated, (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html')) // esto es llamado al front.
+app.get('/', (req, res) => {
+    res.render(path.join(__dirname, '..','public', 'views', 'index.ejs')) // esto es llamado al front.
+})
+
+app.get('/index', (req, res) => {
+    res.render(path.join(__dirname, '..','public', 'views', 'index.ejs')) // esto es llamado al front.
 })
 
 //ruta tutorial de login
 
 app.get('/login', (req, res) => { //login
-    res.render('/home/pc01user/Documents/projects/bemoles-web-back/public/views/login.ejs')
+    res.render(path.join(__dirname, '..', 'public', 'views', 'login.ejs'))
 })
 
 app.post('/login', passport.authenticate('local', { //login
-    successRedirect: '/',
+    successRedirect: '/index',
     failureRedirect: '/login',
     failureFlash: true
 }))
 
 app.get('/register', (req, res) => { //login
-    res.render('/home/pc01user/Documents/projects/bemoles-web-back/public/views/register.ejs')
+    res.render(path.join(__dirname, '..','public', 'views', 'register.ejs'))
 })
 
 app.post('/register', async (req, res) => { //login
@@ -139,7 +149,6 @@ function isAuthenticated(req, res, next) { //login
 // Routes (Admin) //
 //-----------------------------------------------------------------------------------------------------//
 
-
 // /Eventos (Cartelera) TODO
 
 // /Talleres (Agregar Talleres) TODO
@@ -147,8 +156,7 @@ function isAuthenticated(req, res, next) { //login
 // /Proyectos (Agragar Proyectos) TODO
 
 //-----------------------------------------------------------------------------------------------------//
-//-----------------------------------------------------------------------------------------------------//
-
 // Exports
+//-----------------------------------------------------------------------------------------------------//
 
 module.exports = app;

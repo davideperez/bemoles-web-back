@@ -1,36 +1,22 @@
 //-----------------------------------------------------------------------------------------------------//
-// Imports (Native) //
+// Imports //
 //-----------------------------------------------------------------------------------------------------//
 
-require('dotenv').config();
-const http = require('http');
-
-//Imports (Propertary)
-
-const app = require('./app');
-const { mongoConnect } = require('./services/mongo') //TODO
-//const { loadEventosData } = require('models/eventos.model');
+const mongoose = require('mongoose')
 
 //-----------------------------------------------------------------------------------------------------//
-// Server Setup //
+// Schema //
 //-----------------------------------------------------------------------------------------------------//
 
-const PORT = process.env.PORT || 8000;
-const server = http.createServer(app);
-
-async function startServer() {
-    
-    await mongoConnect();
-    // await loadTalleresData();
-    // await loadCursosData();
-
-    server.listen(PORT, () => {
-        console.log(`Listening on port: ${PORT}`);
-    });
-};
+const usersSchema = new mongoose.Schema({
+    id: ID,
+    name: String,
+    email: String,
+    password: String
+})
 
 //-----------------------------------------------------------------------------------------------------//
-//Server Start //
+// Exports
 //-----------------------------------------------------------------------------------------------------//
 
-startServer();
+module.exports = mongoose.model('Users', usersSchema) // TOCHECK: probar si esta linea se puede poner en una funcion aparte y poenr la funcion como export en module.exports.
