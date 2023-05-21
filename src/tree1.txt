@@ -1,0 +1,41 @@
+[01;34m.[0m
+├── app.js
+├── authenticate.js
+├── [01;34mconfigs[0m
+│   ├── jwt.config.js
+│   └── passport.config.js
+├── [01;34mcontrollers[0m
+│   ├── events.controller.js
+│   ├── projects.controller.js
+│   ├── reserves.controller.js
+│   └── user.controller.js
+├── [01;34mmodels[0m
+│   ├── [01;34mevents[0m
+│   │   ├── events.model.js
+│   │   └── events.mongo.js
+│   ├── index.js
+│   ├── [01;34mprojects[0m
+│   │   ├── projects.model.js
+│   │   └── projects.mongo.js
+│   ├── [01;34mreserves[0m
+│   │   ├── reserves.model.js
+│   │   └── reserves.mongo.js
+│   └── [01;34muser[0m
+│       └── user.model.js
+├── [01;34mroutes[0m
+│   ├── auth.router.js
+│   ├── events.router.js
+│   ├── projects.router.js
+│   ├── reserves.router.js
+│   ├── router.js
+│   └── users.router.js
+├── server.js
+├── [01;34mservices[0m
+│   └── mongo.js
+├── [01;34mstrategies[0m
+│   ├── JwtStrategy.js
+│   └── LocalStrategy.js
+├── tree1.txt
+└── tree.txt
+
+10 directories, 28 files

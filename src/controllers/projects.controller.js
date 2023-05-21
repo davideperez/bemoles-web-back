@@ -1,32 +1,39 @@
-//-----------------------------------------------------------------------------------------------------//
-// Imports (Native) //
-//-----------------------------------------------------------------------------------------------------//
-
-require('dotenv').config(); //Aca no va con el if tambien ??
-const http = require('http');
-
-//Imports (Propertary)
-const app = require('./app');
-const { mongoConnect } = require('./services/mongo')
+//TODO: leer sobre el pattern interactor para hacer agnositoc los .controller.js y los .model.js
 
 //-----------------------------------------------------------------------------------------------------//
-// Server Setup //
+// Imports
 //-----------------------------------------------------------------------------------------------------//
 
-const PORT = process.env.PORT || 8000;
-const server = http.createServer(app);
+const { } = require('../models/projects/projects.model');
+const projectsMongo = require('../models/projects/projects.mongo');
 
-async function startServer() {
-    
-    await mongoConnect();
-    //extra data to load before app start.
-    server.listen(PORT, () => {
-        console.log(`Listening on port: ${PORT}`);
-    });
+//-----------------------------------------------------------------------------------------------------//
+// Behaviours
+//-----------------------------------------------------------------------------------------------------//
+
+async function httpGetAllProjects(req, res) {
+    return res.status(200).json(await getAllProjects()); //
 };
 
+async function httpAddNewProject(req, res) {
+   
+};
+
+async function httpDeleteProject (req, res) {
+
+}
+
+async function httpUpdateProject (req, res) {
+
+}
+
 //-----------------------------------------------------------------------------------------------------//
-//Server Start //
+// Exports
 //-----------------------------------------------------------------------------------------------------//
 
-startServer();
+module.exports = {
+    httpGetAllProjects,
+    httpAddNewProject,
+    httpDeleteProject,
+    httpUpdateProject
+};

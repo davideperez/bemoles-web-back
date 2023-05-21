@@ -1,48 +1,39 @@
-
 //-----------------------------------------------------------------------------------------------------//
 // Imports
 //-----------------------------------------------------------------------------------------------------//
 
-const mongoose = require('mongoose')
-require('dotenv').config()
+const express = require('express');
+const authRouter = require('./auth.router')
+const eventsRouter = require('./events.router')
+const reservesRouter = require('./reserves.router')
+const projectsRouter = require('./projects.router')
+const usersRouter = require('./users.router')
+
 
 //-----------------------------------------------------------------------------------------------------//
 // Varaibles & Constants
 //-----------------------------------------------------------------------------------------------------//
 
-const MONGO_URL = process.env.MONGO_URL;
+const router = express.Router();
 
 //-----------------------------------------------------------------------------------------------------//
-// Behaviours
+// Routes
 //-----------------------------------------------------------------------------------------------------//
-//da mas flexibilidad al hacer las querys. Lo sacamos??
-mongoose.set('strictQuery', false); //TODO: Averiguar de que la va esta linea.
 
-//que avise cuando la conexion a la db este ready.
-mongoose.connection.once('open', () => { //TODO: Leer sobre esta funcion. sobre .once
-    console.log('MongoDB connection ready!!🌱')
-})
+router.use('/auth', authRouter);
 
-// notificacion en caso de error
-mongoose.connection.on('error', (err) => { //TODO: Leer sobre esta funcion. Sobre .on
-    console.error(err);
-})
+router.use('/eventos', eventsRouter);
 
-async function mongoConnect() {
-    await mongoose.connect(MONGO_URL)
-}
+router.use('/reservas', reservesRouter);
 
-async function mongoDisconnect() {
-    await mongoose.disconnect()
-}
+router.use('/proyectos', projectsRouter);
 
+console.log("Including usersRouter")
+router.use('/users', usersRouter);
 
 
 //-----------------------------------------------------------------------------------------------------//
 // Exports
 //-----------------------------------------------------------------------------------------------------//
 
-module.exports = {
-    mongoConnect,
-    mongoDisconnect
-}
+module.exports = router; 

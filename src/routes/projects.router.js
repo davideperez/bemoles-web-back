@@ -3,22 +3,28 @@
 //-----------------------------------------------------------------------------------------------------//
 
 const express = require('express');
-const eventosRouter = require('./eventos/eventos.router')
+const { httpGetAllProjects, httpAddNewProject, httpDeleteProject, httpUpdateProject } = require('../controllers/projects.controller')
 
 //-----------------------------------------------------------------------------------------------------//
-// Varaibles & Constants
+// varaibles & constants
 //-----------------------------------------------------------------------------------------------------//
 
-const apiExpressRouter = express.Router();
+const projectsRouter = express.Router()
 
 //-----------------------------------------------------------------------------------------------------//
-// Routes
+// Behaviours
 //-----------------------------------------------------------------------------------------------------//
 
-apiExpressRouter.use('/eventos', eventosRouter);
+projectsRouter.get('/', httpGetAllProjects); // read.
+
+projectsRouter.post('/', httpAddNewProject);
+
+projectsRouter.post('/:id', httpDeleteProject);
+
+projectsRouter.post('/:id', httpUpdateProject);
 
 //-----------------------------------------------------------------------------------------------------//
 // Exports
 //-----------------------------------------------------------------------------------------------------//
 
-module.exports = apiExpressRouter; 
+module.exports = projectsRouter;

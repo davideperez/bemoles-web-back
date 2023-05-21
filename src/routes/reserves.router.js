@@ -1,48 +1,30 @@
-
 //-----------------------------------------------------------------------------------------------------//
 // Imports
 //-----------------------------------------------------------------------------------------------------//
 
-const mongoose = require('mongoose')
-require('dotenv').config()
+const express = require('express');
+const { httpGetAllReserves, httpAddNewReserve, httpDeleteReserve, httpUpdateReserve } = require('../controllers/reserves.controller')
 
 //-----------------------------------------------------------------------------------------------------//
-// Varaibles & Constants
+// varaibles & constants
 //-----------------------------------------------------------------------------------------------------//
 
-const MONGO_URL = process.env.MONGO_URL;
+const reservesRouter = express.Router()
 
 //-----------------------------------------------------------------------------------------------------//
 // Behaviours
 //-----------------------------------------------------------------------------------------------------//
-//da mas flexibilidad al hacer las querys. Lo sacamos??
-mongoose.set('strictQuery', false); //TODO: Averiguar de que la va esta linea.
 
-//que avise cuando la conexion a la db este ready.
-mongoose.connection.once('open', () => { //TODO: Leer sobre esta funcion. sobre .once
-    console.log('MongoDB connection ready!!🌱')
-})
+reservesRouter.get('/', httpGetAllReserves); // read.
 
-// notificacion en caso de error
-mongoose.connection.on('error', (err) => { //TODO: Leer sobre esta funcion. Sobre .on
-    console.error(err);
-})
+reservesRouter.post('/', httpAddNewReserve);
 
-async function mongoConnect() {
-    await mongoose.connect(MONGO_URL)
-}
+reservesRouter.post('/:id', httpDeleteReserve);
 
-async function mongoDisconnect() {
-    await mongoose.disconnect()
-}
-
-
+reservesRouter.post('/:id', httpUpdateReserve);
 
 //-----------------------------------------------------------------------------------------------------//
 // Exports
 //-----------------------------------------------------------------------------------------------------//
 
-module.exports = {
-    mongoConnect,
-    mongoDisconnect
-}
+module.exports = reservesRouter;

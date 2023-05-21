@@ -3,24 +3,28 @@
 //-----------------------------------------------------------------------------------------------------//
 
 const express = require('express');
-const { httpGetAllEventos, httpAddNewEvento } = require('./eventos.controller')
+const { httpGetAllEvents, httpAddNewEvent, httpDeleteEvent, httpUpdateEvent } = require('../controllers/events.controller')
 
 //-----------------------------------------------------------------------------------------------------//
 // varaibles & constants
 //-----------------------------------------------------------------------------------------------------//
 
-const eventosRouter = express.Router()
+const eventsRouter = express.Router()
 
 //-----------------------------------------------------------------------------------------------------//
 // Behaviours
 //-----------------------------------------------------------------------------------------------------//
 
-eventosRouter.get('/', httpGetAllEventos); // read.
+eventsRouter.get('/', httpGetAllEvents); // read.
 
-eventosRouter.post('/', httpAddNewEvento);
+eventsRouter.post('/', httpAddNewEvent);
+
+eventsRouter.post('/:id', httpDeleteEvent);
+
+eventsRouter.post('/:id', httpUpdateEvent);
 
 //-----------------------------------------------------------------------------------------------------//
 // Exports
 //-----------------------------------------------------------------------------------------------------//
 
-module.exports = eventosRouter;
+module.exports = eventsRouter;

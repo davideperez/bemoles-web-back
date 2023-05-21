@@ -33,7 +33,8 @@ function intitialize(passport, getUserByEmail, getUserById) {
         }
     }
     
-    //  1 esta linea crea la nueva estrategia local de authenticacion de usuarios. 
+    //  1 esta linea crea la nueva estrategia local de authenticacion de usuarios.
+    //----------------------------------------------------------------------------
     passport.use(new LocalStrategy({usernameField: 'email'}, authenticateUser))
 
     //transformacion de la data del usuario a un archivo que se guarda en la session.

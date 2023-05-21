@@ -9,7 +9,7 @@ const validator = require('validator');
 // Varaibles & Constants
 //-----------------------------------------------------------------------------------------------------//
 
-const eventosSchema = new mongoose.Schema({
+const eventsSchema = new mongoose.Schema({
     //TODO: Validar cuales de estos campos son required.
     //TODO: Armar types propios, ej type evento (type object)
     /*
@@ -17,15 +17,12 @@ const eventosSchema = new mongoose.Schema({
         type: { type: String, enum: ['PRODUCT', 'TEMPLATE', 'USER', 'WORLD'], },
     */
 
-    nombre: {
+    name: {
         type: String,
         required: true,
     },
-    fecha: {
+    date: {
         type: Date,
-    },
-    hora: {
-        type: String,
     },
     flyer: {
         type: String, // usariamos una URL.
@@ -33,13 +30,13 @@ const eventosSchema = new mongoose.Schema({
     info: {
         type: String,
     },
-    precio: {
+    price: {
         type: Number,
     },
-    cupoMaximo: {
+    maxAttendance: {
         type: Number,
     },
-    linkDePago: {
+    paymentLink: {
         type: String,
         //TODO: Validar si esta validacion es necesaria.
         validate: {
@@ -62,4 +59,4 @@ function isURL(url) {
 // Exports
 //-----------------------------------------------------------------------------------------------------//
 
-module.exports = mongoose.model('Evento',eventosSchema) // TOCHECK: probar si esta linea se puede poner en una funcion aparte y poenr la funcion como export en module.exports.
+module.exports = mongoose.model('Event',eventsSchema) // TOCHECK: probar si esta linea se puede poner en una funcion aparte y poenr la funcion como export en module.exports.

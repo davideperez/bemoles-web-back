@@ -1,22 +1,20 @@
 //-----------------------------------------------------------------------------------------------------//
-// Imports //
+// Imports
 //-----------------------------------------------------------------------------------------------------//
+const express = require("express")
+const { postSignUp, postLogin } = require('../controllers/users.controller')
+const passport = require('passport') // este import no iria si se va el middleware de /login.
 
-const mongoose = require('mongoose')
-
-//-----------------------------------------------------------------------------------------------------//
-// Schema //
-//-----------------------------------------------------------------------------------------------------//
-
-const usersSchema = new mongoose.Schema({
-    id: ID,
-    name: String,
-    email: String,
-    password: String
-})
 
 //-----------------------------------------------------------------------------------------------------//
-// Exports
+// Logic
 //-----------------------------------------------------------------------------------------------------//
+const usersRouter = express.Router()
 
-module.exports = mongoose.model('Users', usersSchema) // TOCHECK: probar si esta linea se puede poner en una funcion aparte y poenr la funcion como export en module.exports.
+usersRouter.use("/signup", postSignUp)
+usersRouter.use("/login", passport.authenticate("local"), postLogin) // Este passport.authenticate.. va aca ?? no puede ir en app.js??
+
+//-----------------------------------------------------------------------------------------------------//
+// Export
+//-----------------------------------------------------------------------------------------------------//
+module.exports = usersRouter

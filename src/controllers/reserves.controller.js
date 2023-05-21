@@ -1,32 +1,39 @@
-//-----------------------------------------------------------------------------------------------------//
-// Imports (Native) //
-//-----------------------------------------------------------------------------------------------------//
-
-require('dotenv').config(); //Aca no va con el if tambien ??
-const http = require('http');
-
-//Imports (Propertary)
-const app = require('./app');
-const { mongoConnect } = require('./services/mongo')
+//TODO: leer sobre el pattern interactor para hacer agnositoc los .controller.js y los .model.js
 
 //-----------------------------------------------------------------------------------------------------//
-// Server Setup //
+// Imports
 //-----------------------------------------------------------------------------------------------------//
 
-const PORT = process.env.PORT || 8000;
-const server = http.createServer(app);
+const { } = require('../models/reserves/reserves.model');
+const reservesMongo = require('../models/reserves/reserves.mongo');
 
-async function startServer() {
-    
-    await mongoConnect();
-    //extra data to load before app start.
-    server.listen(PORT, () => {
-        console.log(`Listening on port: ${PORT}`);
-    });
+//-----------------------------------------------------------------------------------------------------//
+// Behaviours
+//-----------------------------------------------------------------------------------------------------//
+
+async function httpGetAllReserves(req, res) {
+    return res.status(200).json(await getAllReserves()); //
 };
 
+async function httpAddNewReserve(req, res) {
+   
+};
+
+async function httpDeleteReserve (req, res) {
+
+}
+
+async function httpUpdateReserve (req, res) {
+
+}
+
 //-----------------------------------------------------------------------------------------------------//
-//Server Start //
+// Exports
 //-----------------------------------------------------------------------------------------------------//
 
-startServer();
+module.exports = {
+    httpGetAllReserves,
+    httpAddNewReserve,
+    httpDeleteReserve,
+    httpUpdateReserve
+};
