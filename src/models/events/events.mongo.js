@@ -17,7 +17,7 @@ const eventsSchema = new mongoose.Schema({
         type: { type: String, enum: ['PRODUCT', 'TEMPLATE', 'USER', 'WORLD'], },
     */
 
-    name: {
+    title: {
         type: String,
         required: true,
     },

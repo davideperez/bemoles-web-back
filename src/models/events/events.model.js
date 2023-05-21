@@ -26,9 +26,18 @@ saveEventInMongoDB(event)
 //-----------------------------------------------------------------------------------------------------//
 
 //getAllEvents
-async function getAllEvents () { //TODO
+async function getAllEvents (page, items, search) { //TODO
     try {
-        return await eventsDataBase.find({}, {'_id':0, '__v': 0})
+        const query = {};
+        if (search) query.name = new RegExp(search, 'i')
+        
+        const events = await eventsDataBase.find(query, {'__v': 0})
+            .skip((page - 1) * items)
+            .limit(items);
+
+        const count = await eventsDataBase.find({query}, {'_id': 0, '__v': 0}).countDocuments();
+
+        return ({values: events, count});
     } catch(error) {
         console.error(`No se pudieron traer los datos de todos los events desde mongoDB: ${error}`)
     }

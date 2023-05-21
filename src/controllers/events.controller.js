@@ -12,7 +12,14 @@ const eventsMongo = require('../models/events/events.mongo');
 //-----------------------------------------------------------------------------------------------------//
 
 async function httpGetAllEvents(req, res) {
-    return res.status(200).json(await getAllEvents()); //
+    try {
+        const { search, page, items } = req.query;
+        return res.status(200).json(await getAllEvents(+page, +items, search));
+    } catch (err) {
+        return res.status(500).json({
+            error: err.message
+        })
+    }
 };
 
 async function httpAddNewEvent(req, res) {

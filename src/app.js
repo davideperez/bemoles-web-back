@@ -98,7 +98,7 @@ app.use(passport.initialize())
 // Routes (Public) //
 //-----------------------------------------------------------------------------------------------------//
 
-app.use('/', router); //
+app.use('/api', router); //
 
 app.get('/index', (req, res) => {
     res.send({status: 'success'})
