@@ -92,7 +92,7 @@ app.use(passport.initialize())
 //app.use(passport.session())
 
 //Habilita a express a servir archivos estaticos.
-//app.use(express.static(path.join(__dirname, '..', 'public', 'views')));
+app.use(express.static(path.join(__dirname, '..', 'public', 'views')));
 
 //-----------------------------------------------------------------------------------------------------//
 // Routes (Public) //
@@ -100,10 +100,15 @@ app.use(passport.initialize())
 
 app.use('/api', router); //
 
-app.get('/index', (req, res) => {
-    res.send({status: 'success'})
-    //res.render(path.join(__dirname, '..','public', 'views', 'index.ejs')) // esto es llamado al front.
+app.use('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'views', 'index.html'))
+  // res.send('Hola mundo')
 })
+
+// app.get('/index', (req, res) => {
+//     res.send({status: 'success'})
+//     //res.render(path.join(__dirname, '..','public', 'views', 'index.ejs')) // esto es llamado al front.
+// })
 
 //ruta tutorial de login
 
