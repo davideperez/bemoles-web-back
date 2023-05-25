@@ -21,15 +21,7 @@ body {
     margin-bottom: 3rem;
   }
   
-  @media screen and (max-width: 800px) {
-    img {
-        width: 300px;
-        margin-bottom: 1rem;
-      }
-    h1 {
-        font-size: 1.8rem;
-    }
-  }
+ 
 
   .wrapper {
     position: absolute;
@@ -91,4 +83,14 @@ body {
     -webkit-transform: scale(1.2);
     text-decoration: none;
     
+  }
+
+  @media screen and (max-width: 800px) {
+    img {
+        width: 300px;
+        margin-bottom: 1rem;
+      }
+    h1 {
+        font-size: 1.8rem;
+    }
   }
