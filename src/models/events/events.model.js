@@ -1,4 +1,6 @@
 //-----------------------------------------------------------------------------------------------------//
+//-----------------------------------------------------------------------------------------------------//
+//-----------------------------------------------------------------------------------------------------//
 // Imports //
 //-----------------------------------------------------------------------------------------------------//
 
@@ -11,7 +13,7 @@ const eventsDataBase = require('./events.mongo')
 // MOCK
 
 const event = {
-    name: "Concierto de Piano en Burzaco 2",
+    title: "Concierto de Piano en Burzaco 3",
     date: new Date('May 25, 2023'),
     flyer: "flyer.jpg",
     info: "Concierto a cargo del pianista Pierre Aimard, obras de Messiaen.",
@@ -29,7 +31,7 @@ saveEventInMongoDB(event)
 async function getAllEvents (page, items, search) { //TODO
     try {
         const query = {};
-        if (search) query.name = new RegExp(search, 'i')
+        if (search) query.title = new RegExp(search, 'i')
         
         const events = await eventsDataBase.find(query, {'__v': 0})
             .skip((page - 1) * items)
@@ -47,7 +49,7 @@ async function getAllEvents (page, items, search) { //TODO
 async function saveEventInMongoDB (event) { //TODO
     try {
         await eventsDataBase.updateOne({ //TODO validar si la que conviene es events.create() o events.updateOne()
-            name: event.name, 
+            title: event.title, 
         }, event, {
             upsert: true,
         }) 

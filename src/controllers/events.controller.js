@@ -1,8 +1,9 @@
+//-----------------------------------------------------------------------------------------------------//
+//-----------------------------------------------------------------------------------------------------//
+//-----------------------------------------------------------------------------------------------------//
+// Imports //
+//-----------------------------------------------------------------------------------------------------//
 //TODO: leer sobre el pattern interactor para hacer agnositoc los .controller.js y los .model.js
-
-//-----------------------------------------------------------------------------------------------------//
-// Imports
-//-----------------------------------------------------------------------------------------------------//
 
 const { getAllEvents, saveEventInMongoDB } = require('../models/events/events.model');
 const eventsMongo = require('../models/events/events.mongo');
@@ -26,19 +27,19 @@ async function httpAddNewEvent(req, res) {
     const event = req.body 
     
     // 1 se chequea que el event a agregar posea todos los campos requeridos.
-    if (!event.nombre || !event.fecha || !event.hora || !event.fecha || !event.info || !event.precio || !event.cupoMaximo || !event.linkDePago) {
+    if (!event.title || !event.date || !event.time || !event.date || !event.description || !event.price || !event.maxAtendee || !event.paymentLink) {
         return res.status(400).json({
             error: 'Falta cargar una de las propiedades del event.',
         })
     }
 
-    // 2 Conversion del string fecha a objeto fecha de javascript.
-    event.fecha = new Date(event.fecha)
+    // 2 Conversion del string date a objeto date de javascript.
+    event.date = new Date(event.date)
    
-    // 3 Se valida que la fecha no este vacia.
-    if (isNaN(event.fecha)) {
+    // 3 Se valida que la date no este vacia.
+    if (isNaN(event.date)) {
         return res.status(400).json({
-            error: 'Fecha de event invalida.'
+            error: 'date de event invalida.'
         })
     }
 

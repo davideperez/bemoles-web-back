@@ -1,4 +1,6 @@
 //-----------------------------------------------------------------------------------------------------//
+//-----------------------------------------------------------------------------------------------------//
+//-----------------------------------------------------------------------------------------------------//
 // Imports //
 //-----------------------------------------------------------------------------------------------------//
 
@@ -9,12 +11,13 @@ const express = require('express')
 const passport = require('passport')
 //const flash = require('express-flash') // chequear si hay librerias para estos avisos !!
 const bodyParser = require('body-parser')// Se podria desinstalar y usar el de express nativo directamente !!
+const session = require('express-session')
 if (process.env.NODE_ENV !== "production") {
     // Load environment variables from .env file in non prod environments
     require("dotenv").config()
 }
-//const cookieSession = require('cookie-session')
 const cookieParser = require('cookie-parser')
+
 // Imports Propetary
 
 const router = require('./routes/router');
@@ -41,7 +44,6 @@ const app = express();
 ) */
 
 //EJS Setup
-//app.set('view engine', 'ejs')
 
 app.use(bodyParser.json())
 app.use(cookieParser(process.env.COOKIE_SECRET))
@@ -73,23 +75,21 @@ const corsOptions = {
 //Security
 app.use(cors(corsOptions))
 
+app.use(session({
+  secret: 'your_secret_key',
+  resave: false,
+  saveUninitialized: false,
+  // Aditional Options. 
+}))
+
 //Reading Tools
 app.use(morgan('dev'));
 app.use(express.json()) // permite que los requests http lean jsons.
 //app.use(express.urlencoded({extended: false}))
 //app.use(flash())// es necesario??
 
-/* app.use(cookieSession({
-    name: 'admin-session',
-    keys: ['key1', 'key2'], 
-    secret: process.env.COOKIE_SECRET,
-    maxAge: 24 * 60 * 60 * 1000, // ?? esto no va escondido en .env
-    //secure: true, //
-    //httpOnly: true // ?? para que es esta linea
-})) */
-
 app.use(passport.initialize())
-//app.use(passport.session())
+app.use(passport.session())
 
 //Habilita a express a servir archivos estaticos.
 //app.use(express.static(path.join(__dirname, '..', 'public', 'views')));

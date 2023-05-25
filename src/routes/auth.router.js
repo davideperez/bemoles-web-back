@@ -1,9 +1,12 @@
 //-----------------------------------------------------------------------------------------------------//
-// Imports
+//-----------------------------------------------------------------------------------------------------//
+//-----------------------------------------------------------------------------------------------------//
+// Imports //
 //-----------------------------------------------------------------------------------------------------//
 
 const express = require('express');
-const { getLogin, getRegister, postLogin, postRegister, postLogout } = require('../../errors-and-warnings/auth.controller-legacy 01')
+const { getLogin, getRegister, postLogin, postRegister, postLogout } = require('../controllers/users.controller');
+const { postSignUp } = require('../controllers/users.controller.js');
 
 //-----------------------------------------------------------------------------------------------------//
 // varaibles & constants
@@ -15,7 +18,7 @@ const authRouter = express.Router()
 // Behaviours
 //-----------------------------------------------------------------------------------------------------//
 
-authRouter.post('/singup', postLogout)
+authRouter.post('/signup', postSignUp)
 
 
 /* authRouter.get('/register', getRegister)
