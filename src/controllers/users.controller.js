@@ -29,19 +29,26 @@ async function postSignUp(req, res, next) {
         console.log("First name is not empty");
 
         try {
-            // esta linea toma del request body, el username y el password, y crea un nuevo User, segun el schema. Luego lo registra tambien. 
-            const user = await User.register(new User({ username: req.body.username }), req.body.password); // de esta linea no entiendo porque usa username: req.body.username
+            // se toman el username y el password del body del request, se CREA y se REGISTRA en la db, un nuevo User. 
+            const user = await User.register(new User({ username: req.body.username }), req.body.password);
+            
+            //se le agregan los campos firstname y lastname. 
             user.firstName = req.body.firstName;
             user.lastName = req.body.lastName || "";
             
+            //la funcion getToken de authenticate.js, llama a jwt.sign(), q devuelve.... un token??
             const token = getToken({ _id: user._id });
             
+            // la funcion getRefreshToken de authenticate.js, es exactamente igual a la de getToken, pero difieren el expiry. llama a jwt.sign()
             const refreshToken = getRefreshToken({ _id: user._id });
             user.refreshToken.push({ refreshToken });
             
+            //salva la variable user, en la db en mongo db.
             await user.save();
             
+            //se envia la cookie. se la nombra refreshToken, se manda el refreshTokedn y las opciones de cookie. 
             res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS);
+            //se envia la respuesta HTTP:en este caso con un token de acceso. 
             res.send({ success: true, token });
         } catch (err) {
             res.statusCode = 500;
