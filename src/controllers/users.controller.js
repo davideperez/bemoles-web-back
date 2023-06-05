@@ -29,13 +29,18 @@ async function postSignUp(req, res, next) {
         console.log("First name is not empty");
 
         try {
+            // esta linea toma del request body, el username y el password, y crea un nuevo User, segun el schema. Luego lo registra tambien. 
             const user = await User.register(new User({ username: req.body.username }), req.body.password); // de esta linea no entiendo porque usa username: req.body.username
             user.firstName = req.body.firstName;
             user.lastName = req.body.lastName || "";
+            
             const token = getToken({ _id: user._id });
+            
             const refreshToken = getRefreshToken({ _id: user._id });
             user.refreshToken.push({ refreshToken });
+            
             await user.save();
+            
             res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS);
             res.send({ success: true, token });
         } catch (err) {
@@ -66,6 +71,11 @@ async function postLogin(req, res, next) {
 async function postRefreshToken( req, res, next) {
 
 }
+
+function getUser( req, res, next) {
+    res.send(req.user)
+}
+
 //-----------------------------------------------------------------------------------------------------//
 // Exports
 //-----------------------------------------------------------------------------------------------------//
@@ -73,7 +83,8 @@ async function postRefreshToken( req, res, next) {
 module.exports = {
     postSignUp,
     postLogin,
-    postRefreshToken
+    postRefreshToken,
+    getUser
 }
 
 

@@ -105,29 +105,11 @@ app.use('/', (req, res) => {
   // res.send('Hola mundo')
 })
 
-// app.get('/index', (req, res) => {
-//     res.send({status: 'success'})
-//     //res.render(path.join(__dirname, '..','public', 'views', 'index.ejs')) // esto es llamado al front.
-// })
-
-//ruta tutorial de login
-
-/* function isAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next
-    }
-    res.redirect('/auth/login')
-} */
-
 //-----------------------------------------------------------------------------------------------------//
 // Exports
 //-----------------------------------------------------------------------------------------------------//
 
 module.exports = app;
-
-
-
-
 
 //-----------------------------------------------------------------------------------------------------//
 
