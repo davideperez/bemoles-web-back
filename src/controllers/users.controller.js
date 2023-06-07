@@ -29,14 +29,26 @@ async function postSignUp(req, res, next) {
         console.log("First name is not empty");
 
         try {
-            const user = await User.register(new User({ username: req.body.username }), req.body.password); // de esta linea no entiendo porque usa username: req.body.username
+            // se toman el username y el password del body del request, se CREA y se REGISTRA en la db, un nuevo User. 
+            const user = await User.register(new User({ username: req.body.username }), req.body.password);
+            
+            //se le agregan los campos firstname y lastname. 
             user.firstName = req.body.firstName;
             user.lastName = req.body.lastName || "";
+            
+            //la funcion getToken de authenticate.js, llama a jwt.sign(), q devuelve.... un token??
             const token = getToken({ _id: user._id });
+            
+            // la funcion getRefreshToken de authenticate.js, es exactamente igual a la de getToken, pero difieren el expiry. llama a jwt.sign()
             const refreshToken = getRefreshToken({ _id: user._id });
             user.refreshToken.push({ refreshToken });
+            
+            //salva la variable user, en la db en mongo db.
             await user.save();
+            
+            //se envia la cookie. se la nombra refreshToken, se manda el refreshTokedn y las opciones de cookie. 
             res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS);
+            //se envia la respuesta HTTP:en este caso con un token de acceso. 
             res.send({ success: true, token });
         } catch (err) {
             res.statusCode = 500;
@@ -63,46 +75,14 @@ async function postLogin(req, res, next) {
     }
 }
 
-async function postRefreshToken(req, res, next) {
-    try {
-      const { signedCookies = {} } = req;
-      const { refreshToken } = signedCookies;
-  
-      if (refreshToken) {
-        const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-        const userId = payload._id;
-  
-        const user = await User.findOne({ _id: userId });
-  
-        if (user) {
-          const tokenIndex = user.refreshToken.findIndex(
-            (item) => item.refreshToken === refreshToken
-          );
-  
-          if (tokenIndex === -1) {
-            res.statusCode = 401;
-            res.send("Unauthorized");
-          } else {
-            const token = getToken({ _id: userId });
-            const newRefreshToken = getRefreshToken({ _id: userId });
-            user.refreshToken[tokenIndex] = { refreshToken: newRefreshToken };
-            await user.save();
-            res.cookie("refreshToken", newRefreshToken, COOKIE_OPTIONS);
-            res.send({ success: true, token });
-          }
-        } else {
-          res.statusCode = 401;
-          res.send("Unauthorized");
-        }
-      } else {
-        res.statusCode = 401;
-        res.send("Unauthorized");
-      }
-    } catch (err) {
-      res.statusCode = 401;
-      res.send("Unauthorized");
-    }
-  }
+async function postRefreshToken( req, res, next) {
+
+}
+
+function getUser( req, res, next) {
+    res.send(req.user)
+}
+
 //-----------------------------------------------------------------------------------------------------//
 // Exports
 //-----------------------------------------------------------------------------------------------------//
@@ -110,7 +90,8 @@ async function postRefreshToken(req, res, next) {
 module.exports = {
     postSignUp,
     postLogin,
-    postRefreshToken
+    postRefreshToken,
+    getUser
 }
 
 

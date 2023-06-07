@@ -51,7 +51,7 @@ const User = new Schema({
 //-----------------------------------------------------------------------------------------------------//
 
 //Remove refreshToken from the response
-User.set("toJSON", { // leer mas sobre este paso ?? !!
+User.set("toJSON", { 
   transform: function (doc, ret, options) {
     delete ret.refreshToken
     return ret
