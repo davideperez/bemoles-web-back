@@ -27,7 +27,7 @@ async function httpAddNewEvent(req, res) {
     const event = req.body 
     
     // 1 se chequea que el event a agregar posea todos los campos requeridos.
-    if (!event.title || !event.date || !event.time || !event.date || !event.description || !event.price || !event.maxAtendee || !event.paymentLink) {
+    if (!event.title || !event.date || !event.flyer ||!event.info || !event.price || !event.maxAttendance || !event.paymentLink) {
         return res.status(400).json({
             error: 'Falta cargar una de las propiedades del event.',
         })
