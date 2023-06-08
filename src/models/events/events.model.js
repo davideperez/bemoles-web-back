@@ -28,20 +28,29 @@ saveEventInMongoDB(event)
 //-----------------------------------------------------------------------------------------------------//
 
 //getAllEvents
-async function getAllEvents (page, items, search) { //TODO
+async function getAllEvents (page, items, search) {
     try {
         const query = {};
-        if (search) query.title = new RegExp(search, 'i')
+        if (search) query.title = { $regex: `${search}`, $options: 'i' };
         
         const events = await eventsDataBase.find(query, {'__v': 0})
             .skip((page - 1) * items)
             .limit(items);
 
-        const count = await eventsDataBase.find({query}, {'_id': 0, '__v': 0}).countDocuments();
+        const count = await eventsDataBase.find(query).countDocuments();
 
         return ({values: events, count});
     } catch(error) {
         console.error(`No se pudieron traer los datos de todos los events desde mongoDB: ${error}`)
+    }
+}
+
+//getEvent
+async function getEvent (eventId) {
+    try {
+       return await eventsDataBase.findById(eventId);
+    } catch(error) {
+        console.error(`No se pudo traer el evento desde mongoDB: ${error}`)
     }
 }
 
@@ -69,6 +78,7 @@ async function deleteEventById () { //TODO
 
 module.exports = {
     getAllEvents,
+    getEvent,
     saveEventInMongoDB,
     deleteEventById
 }

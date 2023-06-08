@@ -5,7 +5,7 @@
 //-----------------------------------------------------------------------------------------------------//
 
 const express = require('express');
-const { httpGetAllEvents, httpAddNewEvent, httpDeleteEvent, httpUpdateEvent } = require('../controllers/events.controller')
+const { httpGetAllEvents, httpGetEvent, httpAddNewEvent, httpDeleteEvent, httpUpdateEvent } = require('../controllers/events.controller')
 
 //-----------------------------------------------------------------------------------------------------//
 // varaibles & constants
@@ -17,7 +17,9 @@ const eventsRouter = express.Router()
 // Behaviours
 //-----------------------------------------------------------------------------------------------------//
 
-eventsRouter.get('/', httpGetAllEvents); // read.
+eventsRouter.get('/:id', httpGetEvent);
+
+eventsRouter.get('/', httpGetAllEvents);
 
 eventsRouter.post('/', httpAddNewEvent);
 
