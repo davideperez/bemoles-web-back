@@ -3,7 +3,7 @@
 //-----------------------------------------------------------------------------------------------------//
 // Imports //
 //-----------------------------------------------------------------------------------------------------//
-
+const jwt = require("jsonwebtoken")
 const User = require("../models/user/user.model")
 const { getToken, COOKIE_OPTIONS, getRefreshToken } = require("../authenticate")
 
@@ -76,8 +76,55 @@ async function postLogin(req, res, next) {
 }
 
 async function postRefreshToken( req, res, next) {
+  try {
+    const { signedCookies = {} } = req
+    const { refreshToken } = signedCookies
 
+    if (refreshToken) {
+      try {
+        //se pasa del token codificado a uno decodificado y se guarda en payload. 
+        const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
+        console.log(JSON.stringify(payload , null, 2))
+        //
+        const userId = payload._id
+        //
+        const user = await User.findOne({ _id: userId })
+
+        if (user) {
+          // Find the refresh token against the user record in database
+          const tokenIndex = user.refreshToken.findIndex(
+            item => item.refreshToken === refreshToken
+          )
+
+          if (tokenIndex === -1) {
+            res.statusCode = 401
+            res.send("Unauthorized")
+          } else {
+            const token = getToken({ _id: userId })
+            // If the refresh token exists, then create new one and replace it.
+            const newRefreshToken = getRefreshToken({ _id: userId })
+            user.refreshToken[tokenIndex] = { refreshToken: newRefreshToken }
+            await user.save()
+            res.cookie("refreshToken", newRefreshToken, COOKIE_OPTIONS)
+            res.send({ success: true, token })
+          }
+        } else {
+          res.statusCode = 401
+          res.send("Unauthorized")
+        }
+      } catch (err) {
+        res.statusCode = 401
+        res.send("Unauthorized")
+      }
+    } else {
+      res.statusCode = 401
+      res.send("Unauthorized")
+    }
+  } catch (err) {
+    next(err)
+  }
 }
+
 
 function getUser( req, res, next) {
     res.send(req.user)
@@ -93,7 +140,6 @@ module.exports = {
     postRefreshToken,
     getUser
 }
-
 
 
 /*
