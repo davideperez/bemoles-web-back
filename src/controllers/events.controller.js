@@ -21,7 +21,7 @@ async function httpGetAllEvents(req, res) {
             error: err.message
         })
     }
-};
+}; 
 
 async function httpGetEvent(req, res) {
     try {
@@ -37,7 +37,7 @@ async function httpAddNewEvent(req, res) {
     const event = req.body 
     
     // 1 se chequea que el event a agregar posea todos los campos requeridos.
-    if (!event.title || !event.date || !event.flyer ||!event.info || !event.price || !event.maxAttendance || !event.paymentLink) {
+    if (!event.title || !event.date || !event.image ||!event.info || !event.price || !event.maxAttendance || !event.paymentLink) {
         return res.status(400).json({
             error: 'Falta cargar una de las propiedades del event.',
         })
@@ -61,7 +61,25 @@ async function httpAddNewEvent(req, res) {
 
 async function httpDeleteEvent (req, res) {
 
-}
+    const eventFind = await eventsDatabase.findById(req.params.id);
+    
+    if (!eventFind) return res.status(400).send({success: false});
+    
+    if (eventFind.image && eventFind.image !== urlDefaultImage) {
+      await removeFileToCloudinary(`${eventFind.image}`)
+    }
+  
+    if (eventFind.images && eventFind.images.length > 0) {
+      eventFind.images?.forEach(async (im) => {
+        await removeFileToCloudinary(im);
+      });
+    }
+  
+    const productDeleteResponse = await eventsDatabase.findByIdAndRemove(req.params.id)
+    if (!productDeleteResponse) return res.status(400).json({ success: false, message: "product not found!" });
+        
+    return res.status(200).json({ success: true, message: "the product is deleted!" });  
+};
 
 async function httpUpdateEvent (req, res) {
 
