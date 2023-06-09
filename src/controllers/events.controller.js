@@ -21,7 +21,7 @@ async function httpGetAllEvents(req, res) {
             error: err.message
         })
     }
-};
+}; 
 
 async function httpGetEvent(req, res) {
     try {
