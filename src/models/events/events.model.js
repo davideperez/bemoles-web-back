@@ -21,6 +21,7 @@ const event = {
     maxAttendance: 800,
     paymentLink: 'https://www.mercadopago.com.ar',
 }
+
 saveEventInMongoDB(event)
 
 //-----------------------------------------------------------------------------------------------------//
@@ -68,7 +69,7 @@ async function saveEventInMongoDB (event) { //TODO
 } 
 
 //deleteEvents
-async function deleteEventById () { //TODO
+async function deleteEventById (eventId) { //TODO
 
 } 
 

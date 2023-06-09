@@ -26,7 +26,7 @@ const eventsSchema = new mongoose.Schema({
     date: {
         type: Date,
     },
-    flyer: {
+    image: {
         type: String, // usariamos una URL.
     },
     info: {

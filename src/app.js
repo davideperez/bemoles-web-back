@@ -21,6 +21,7 @@ const cookieParser = require('cookie-parser')
 // Imports Propetary
 
 const router = require('./routes/router');
+const { fileLoader } = require('ejs')
 //const users = require('./models/user/user.model')
 //const intitializePassport = require('./configs/passport.config')
 
@@ -93,6 +94,12 @@ app.use(passport.session())
 
 //Habilita a express a servir archivos estaticos.
 app.use(express.static(path.join(__dirname, '..', 'public', 'views')));
+
+app.use(fileUpLoad({
+  useTempFiles : true,
+  tempFileDir : '/tmp/'
+  }
+))
 
 //-----------------------------------------------------------------------------------------------------//
 // Routes (Public) //
