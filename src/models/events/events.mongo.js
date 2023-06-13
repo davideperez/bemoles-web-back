@@ -4,14 +4,15 @@
 // Imports //
 //-----------------------------------------------------------------------------------------------------//
 
-const mongoose = require('mongoose')
-const validator = require('validator');
+const mongoose = require("mongoose");
+const validator = require("validator");
 
 //-----------------------------------------------------------------------------------------------------//
 // Varaibles & Constants
 //-----------------------------------------------------------------------------------------------------//
 
-const eventsSchema = new mongoose.Schema({
+const eventsSchema = new mongoose.Schema(
+  {
     //TODO: Validar cuales de estos campos son required.
     //TODO: Armar types propios, ej type evento (type object)
     /*
@@ -20,36 +21,44 @@ const eventsSchema = new mongoose.Schema({
     */
 
     title: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     date: {
-        type: Date,
+      type: Date,
     },
     image: {
-        type: String, // usariamos una URL.
+      type: String, // usariamos una URL.
     },
     info: {
-        type: String,
+      type: String,
     },
     price: {
-        type: Number,
+      type: Number,
     },
     maxAttendance: {
-        type: Number,
+      type: Number,
     },
     paymentLink: {
-        type: String,
-        //TODO: Validar si esta validacion es necesaria.
-        validate: {
-            validator: isURL,
-            message: `{VALUE} no es una URL VALIDA`
+      type: String,
+      //TODO: Validar si esta validacion es necesaria.
+      validate: {
+        validator: isURL,
+        message: `{VALUE} no es una URL VALIDA`,
         },
-    }
+  },
+    },
+    active: {
+      type: Boolean,
+      default: true,
     
 },  {
     timestamps: true
-})
+  },
+  {
+    timestamps: true,
+  }
+);
 
 //-----------------------------------------------------------------------------------------------------//
 // Behaviours
@@ -57,11 +66,11 @@ const eventsSchema = new mongoose.Schema({
 
 //TODO: Esta funcionalidad iria aca???s
 function isURL(url) {
-    return validator.isURL(url);
+  return validator.isURL(url);
 }
 
 //-----------------------------------------------------------------------------------------------------//
 // Exports
 //-----------------------------------------------------------------------------------------------------//
 
-module.exports = mongoose.model('Event',eventsSchema) // TOCHECK: probar si esta linea se puede poner en una funcion aparte y poenr la funcion como export en module.exports.
+module.exports = mongoose.model("Event", eventsSchema); // TOCHECK: probar si esta linea se puede poner en una funcion aparte y poenr la funcion como export en module.exports.

@@ -23,9 +23,10 @@ eventsRouter.get('/', httpGetAllEvents);
 
 eventsRouter.post('/', httpAddNewEvent);
 
-eventsRouter.post('/:id', httpDeleteEvent);
+eventsRouter.put('/:id', httpUpdateEvent);
 
-eventsRouter.post('/:id', httpUpdateEvent);
+eventsRouter.delete('/:id', httpDeleteEvent);
+
 
 //-----------------------------------------------------------------------------------------------------//
 // Exports
