@@ -75,6 +75,9 @@ const corsOptions = {
 
 //Security
 app.use(cors(corsOptions))
+app.use(morgan('dev'));
+app.use(express.json()) // permite que los requests http lean jsons.
+app.use(express.static(path.join(__dirname, '..', 'public', 'views')));
 
 app.use(session({
   secret: 'your_secret_key',
@@ -84,8 +87,6 @@ app.use(session({
 }))
 
 //Reading Tools
-app.use(morgan('dev'));
-app.use(express.json()) // permite que los requests http lean jsons.
 //app.use(express.urlencoded({extended: false}))
 //app.use(flash())// es necesario??
 
@@ -93,7 +94,6 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 //Habilita a express a servir archivos estaticos.
-app.use(express.static(path.join(__dirname, '..', 'public', 'views')));
 
 app.use(fileUpLoad({
   useTempFiles : true,

@@ -44,8 +44,11 @@ const eventsSchema = new mongoose.Schema({
         validate: {
             validator: isURL,
             message: `{VALUE} no es una URL VALIDA`
-        }
-    },
+        },
+    }
+    
+},  {
+    timestamps: true
 })
 
 //-----------------------------------------------------------------------------------------------------//

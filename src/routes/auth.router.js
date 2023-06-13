@@ -4,7 +4,7 @@
 // Imports //
 //-----------------------------------------------------------------------------------------------------//
 const express = require("express")
-const { postSignUp, postLogin, postRefreshToken, getUser } = require('../controllers/users.controller')
+const { register, login, postRefreshToken, getUser } = require('../controllers/auth.controller')
 const passport = require('passport') // este import no iria si se va el middleware de /login.
 const { verifyUser } = require("../authenticate")
 
@@ -13,16 +13,16 @@ const { verifyUser } = require("../authenticate")
 //-----------------------------------------------------------------------------------------------------//
 // Logic
 //-----------------------------------------------------------------------------------------------------//
-const usersRouter = express.Router()
+const authRouter = express.Router()
 
-usersRouter.use("/signup", postSignUp)
-usersRouter.use("/login", passport.authenticate("local"), postLogin) // Este passport.authenticate.. va aca ?? no puede ir en app.js??
-usersRouter.use('/refreshToken', postRefreshToken)
-usersRouter.use('/me', verifyUser, getUser)
+authRouter.use("/register", register)
+authRouter.use("/login", passport.authenticate("local"), login) // Este passport.authenticate.. va aca ?? no puede ir en app.js??
+authRouter.use('/refreshToken', postRefreshToken)
+authRouter.use('/me', verifyUser, getUser)
 
 //-----------------------------------------------------------------------------------------------------//
 // Export
 //-----------------------------------------------------------------------------------------------------//
-module.exports = usersRouter
+module.exports = authRouter
 
 

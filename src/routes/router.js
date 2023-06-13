@@ -8,7 +8,7 @@ const express = require('express');
 const eventsRouter = require('./events.router')
 const reservesRouter = require('./reserves.router')
 const projectsRouter = require('./projects.router')
-const usersRouter = require('./users.router')
+const authRouter = require('./auth.router')
 
 
 //-----------------------------------------------------------------------------------------------------//
@@ -28,9 +28,9 @@ router.use('/reservas', reservesRouter);
 
 router.use('/proyectos', projectsRouter);
 
-console.log("Including usersRouter")
+console.log("Including authRouter")
 
-router.use('/users', usersRouter);
+router.use('/auth', authRouter);
 
 
 //-----------------------------------------------------------------------------------------------------//

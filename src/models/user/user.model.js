@@ -44,6 +44,8 @@ const User = new Schema({
   refreshToken: {
     type: [Session], // de quien recibe ??
   },
+},{
+    timestamps: true
 })
 
 //-----------------------------------------------------------------------------------------------------//

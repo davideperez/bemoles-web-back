@@ -14,8 +14,8 @@ const { getToken, COOKIE_OPTIONS, getRefreshToken } = require("../authenticate")
 console.log("Inside users.controller module")
 
 
-async function postSignUp(req, res, next) {
-    console.log("Inside postSignup function");
+async function register(req, res, next) {
+    console.log("Inside register function");
 
     // Verify that first name is not empty
     if (!req.body.firstName) {
@@ -135,7 +135,7 @@ function getUser( req, res, next) {
 //-----------------------------------------------------------------------------------------------------//
 
 module.exports = {
-    postSignUp,
+    register,
     postLogin,
     postRefreshToken,
     getUser
@@ -172,7 +172,7 @@ async function postLogin (req, res, next) {
 
 Codigo original de postSingUp:
 
-async function postSignUp (req, res, next) {
+async function register (req, res, next) {
     console.log("Inside postSingup function 💡💡💡💡💡")
   
     // Verify that first name is not empty
