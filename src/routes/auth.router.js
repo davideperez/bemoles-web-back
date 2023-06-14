@@ -1,18 +1,9 @@
-//-----------------------------------------------------------------------------------------------------//
-//-----------------------------------------------------------------------------------------------------//
-//-----------------------------------------------------------------------------------------------------//
-// Imports //
-//-----------------------------------------------------------------------------------------------------//
 const express = require("express")
 const { register, login, postRefreshToken, getUser } = require('../controllers/auth.controller')
 const passport = require('passport') // este import no iria si se va el middleware de /login.
 const { verifyUser } = require("../authenticate")
 
 
-
-//-----------------------------------------------------------------------------------------------------//
-// Logic
-//-----------------------------------------------------------------------------------------------------//
 const authRouter = express.Router()
 
 authRouter.use("/register", register)
@@ -20,9 +11,7 @@ authRouter.use("/login", passport.authenticate("local"), login) // Este passport
 authRouter.use('/refreshToken', postRefreshToken)
 authRouter.use('/me', verifyUser, getUser)
 
-//-----------------------------------------------------------------------------------------------------//
-// Export
-//-----------------------------------------------------------------------------------------------------//
+
 module.exports = authRouter
 
 

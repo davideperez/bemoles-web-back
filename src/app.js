@@ -92,8 +92,8 @@ app.use(session({
 //app.use(express.urlencoded({extended: false}))
 //app.use(flash())// es necesario??
 
-app.use(passport.initialize())
 app.use(passport.session())
+app.use(passport.initialize())
 
 //Habilita a express a servir archivos estaticos.
 

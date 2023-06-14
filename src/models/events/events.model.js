@@ -1,14 +1,4 @@
-//-----------------------------------------------------------------------------------------------------//
-//-----------------------------------------------------------------------------------------------------//
-//-----------------------------------------------------------------------------------------------------//
-// Imports //
-//-----------------------------------------------------------------------------------------------------//
-
 const eventsDataBase = require('./events.mongo')
-
-//-----------------------------------------------------------------------------------------------------//
-// Vars //
-//-----------------------------------------------------------------------------------------------------//
 
 // MOCK
 
@@ -22,13 +12,19 @@ const event = {
     paymentLink: 'https://www.mercadopago.com.ar',
 }
 
+
 // upsertEventByIdInMongoDB(event);
 
-//-----------------------------------------------------------------------------------------------------//
-// Behaviours //
-//-----------------------------------------------------------------------------------------------------//
-
 //getAllEvents
+async function createEventByIdInMongoDB (event) {
+    try {
+        const newEvent = new eventsDataBase(event);
+        return await newEvent.save();
+    } catch (err) {
+        console.error(`No se pudo crear el evento en la base de datos: ${err}`)
+    }
+} 
+
 async function getAllEvents (page, items, search) {
     try {
         const query = {};
@@ -54,15 +50,6 @@ async function getEvent (eventId) {
         console.error(`No se pudo traer el evento desde mongoDB: ${error}`)
     }
 }
-
-async function createEventByIdInMongoDB (event) {
-    try {
-        const newEvent = new eventsDataBase(event);
-        return await newEvent.save();
-    } catch (err) {
-        console.error(`No se pudo crear el evento en la base de datos: ${err}`)
-    }
-} 
 
 async function updateEventByIdInMongoDB (eventId, event) {
     try {

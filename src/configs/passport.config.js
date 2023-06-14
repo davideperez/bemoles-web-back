@@ -1,22 +1,12 @@
-//-----------------------------------------------------------------------------------------------------//
-//-----------------------------------------------------------------------------------------------------//
-//-----------------------------------------------------------------------------------------------------//
-// Imports //
-//-----------------------------------------------------------------------------------------------------//
-
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcrypt')
 
-//-----------------------------------------------------------------------------------------------------//
-// Behaviours //
-//-----------------------------------------------------------------------------------------------------//
-
 function intitialize(passport, getUserByEmail, getUserById) {
-    
+    console.log('adentro de /configs/passport.config.js/initialize()')
     //esta funcion recibe los datos del user y devuelve 
     const authenticateUser = async (email, password, done) => {
         // se trae el usuario y guarda en var.
-        const user = getUserByEmail(email)
+        const user = await getUserByEmail(email)
         // Si el usuario no existe entonces se pasa false:
         if (user == null) {
             return done(null, false, {message: "No user with that email"})
@@ -47,9 +37,5 @@ function intitialize(passport, getUserByEmail, getUserById) {
         return done(null, getUserById(id))
     })
 }
-
-//-----------------------------------------------------------------------------------------------------//
-// Exports //
-//-----------------------------------------------------------------------------------------------------//
 
 module.exports = intitialize
