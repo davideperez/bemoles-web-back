@@ -1,6 +1,4 @@
 //-----------------------------------------------------------------------------------------------------//
-//-----------------------------------------------------------------------------------------------------//
-//-----------------------------------------------------------------------------------------------------//
 // Imports //
 //-----------------------------------------------------------------------------------------------------//
 
@@ -19,15 +17,12 @@ if (process.env.NODE_ENV !== "production") {
 const cookieParser = require('cookie-parser')
 const fileUpLoad = require('express-fileupload')
 
-
 // Imports Propetary
 
 const router = require('./routes/router');
 const { fileLoader } = require('ejs')
-//const users = require('./models/user/user.model')
-//const intitializePassport = require('./configs/passport.config')
+const { verifyUser } = require('./authenticate')
 
-//probar comentar estas 3 ya que no xe estan usando aca...
 require("./strategies/JwtStrategy")
 require("./strategies/LocalStrategy")
 require("./authenticate")
@@ -39,19 +34,8 @@ require("./authenticate")
 //EXPRESS Setup
 const app = express();
 
-//PASSPORT Setup
-/* intitializePassport(
-    passport,
-    email => users.find(user => user.email === email),
-    id => users.find(user => user.id === id)
-) */
-
-//EJS Setup
-
 app.use(bodyParser.json())
 app.use(cookieParser(process.env.COOKIE_SECRET))
-
-//const userRouter = require("./routes/userRoutes")
 
 //CORS Setup
 const whitelist = process.env.WHITELISTED_DOMAINS
@@ -74,12 +58,22 @@ const corsOptions = {
 // Middleware //
 //-----------------------------------------------------------------------------------------------------//
 
-
 //Security
+//TODO: Add the Helmet dependency. ??
 app.use(cors(corsOptions))
 app.use(morgan('dev'));
 app.use(express.json()) // permite que los requests http lean jsons.
+//Enables Express to serve static files 
 app.use(express.static(path.join(__dirname, '..', 'public', 'views')));
+
+//Enables express to receive form data ??
+app.use(fileUpLoad({
+  useTempFiles : true,
+  tempFileDir : '/tmp/'
+  }
+))
+
+//Auth
 
 app.use(session({
   secret: 'your_secret_key',
@@ -88,20 +82,8 @@ app.use(session({
   // Aditional Options. 
 }))
 
-//Reading Tools
-//app.use(express.urlencoded({extended: false}))
-//app.use(flash())// es necesario??
-
 app.use(passport.session())
 app.use(passport.initialize())
-
-//Habilita a express a servir archivos estaticos.
-
-app.use(fileUpLoad({
-  useTempFiles : true,
-  tempFileDir : '/tmp/'
-  }
-))
 
 //-----------------------------------------------------------------------------------------------------//
 // Routes (Public) //
@@ -109,46 +91,9 @@ app.use(fileUpLoad({
 
 app.use('/api', router); //
 
-app.use('/', (req, res) => {
+app.use('/', verifyUser, (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'views', 'index.html'))
   // res.send('Hola mundo')
 })
 
-//-----------------------------------------------------------------------------------------------------//
-// Exports
-//-----------------------------------------------------------------------------------------------------//
-
 module.exports = app;
-
-//-----------------------------------------------------------------------------------------------------//
-
-// vincular base datos.
-// 1ero jswon web tokens. es el token de autenticacion. con un expire por dia.
-// y luego guardo eso en la cookie
-// el login que devuelva el nombre del usuario, no el id. 
-// 
-//-----------------------------------------------------------------------------------------------------//
-
-//back
-// paginado, filtros y busqueda. 
-/* /Eventos
-        get
-            eventos?page=1$items=20$search=banda&taller=true
-            tener en cuenta lo que va como query y lo que vuelve como respuesta.
-            
-            const query = {}
-            query.search = {name: {$regex: `${search}`, $options: 'i'}}
-            query.taller = true
-
-            {
-                values: [array de los objetos que cumple con la busqueda.]//20 items
-                count: // el total para que arme el paginador.
-            }
-            await eventos.find(query) //la i es de mongoose, es include.
-            .skip(page -1)*items)
-            .limit(items)
-
-            await eventos.find().coundtDocuments();
-        post
-        update(edit)
-*/

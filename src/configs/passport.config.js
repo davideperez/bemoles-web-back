@@ -1,4 +1,4 @@
-const LocalStrategy = require('passport-local').Strategy
+/* const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcrypt')
 
 function intitialize(passport, getUserByEmail, getUserById) {
@@ -38,4 +38,4 @@ function intitialize(passport, getUserByEmail, getUserById) {
     })
 }
 
-module.exports = intitialize
+module.exports = intitialize */
