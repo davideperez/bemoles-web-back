@@ -113,6 +113,31 @@ async function postRefreshToken( req, res, next) {
   }
 }
 
+/* async function logout(req, res, next) {
+  try {
+    const { signedCookies = {} } = req
+    const { refreshToken } = signedCookies
+
+    const user = await User.findById(req.user._id)
+    const tokenIndex = user.refreshToken.findIndex(
+      item => item.refreshToken === refreshToken
+    )
+      
+    if (tokenIndex !== -1) {
+      user.refreshToken.id(user.refreshToken[tokenIndex]._id).remove()
+    }
+
+    await user.save()
+
+    res.clearCookie('refreshToken', COOKIE_OPTIONS)
+    res.send({success: true})
+
+  } catch (error) {
+    res.statusCode = 500
+    res.send(error)
+  }
+}
+ */
 
 function getUser( req, res, next) {
     res.send(req.user)
@@ -122,5 +147,6 @@ module.exports = {
     register,
     login,
     postRefreshToken,
-    getUser
+/*     logout,
+ */    getUser
 }

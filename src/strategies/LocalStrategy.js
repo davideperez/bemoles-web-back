@@ -1,14 +1,6 @@
-//-----------------------------------------------------------------------------------------------------//
-// Imports //
-//-----------------------------------------------------------------------------------------------------//
-
 const passport = require("passport")
 const LocalStrategy = require("passport-local").Strategy
 const User = require("../models/user/user.model")
-
-//-----------------------------------------------------------------------------------------------------//
-// Logic //
-//-----------------------------------------------------------------------------------------------------//
 
 //Called during login/sign up.
 passport.use(new LocalStrategy(User.authenticate()))
@@ -23,4 +15,4 @@ passport.deserializeUser(async function (id, done) {
     } catch (error) {
       done(error, null);
     }
-});  
+});
