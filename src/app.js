@@ -34,8 +34,9 @@ require("./authenticate")
 //EXPRESS Setup
 const app = express();
 
-app.use(bodyParser.json())
 app.use(cookieParser(process.env.COOKIE_SECRET))
+app.use(bodyParser.json())
+app.use(express.urlencoded({ extended: false }));
 
 //CORS Setup
 const whitelist = process.env.WHITELISTED_DOMAINS
@@ -79,6 +80,7 @@ app.use(session({
   secret: 'your_secret_key',
   resave: false,
   saveUninitialized: false,
+  cookie: { secure: true },
   // Aditional Options. 
 }))
 
@@ -91,7 +93,7 @@ app.use(passport.initialize())
 
 app.use('/api', router); //
 
-app.use('/', verifyUser, (req, res) => {
+app.use('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'views', 'index.html'))
   // res.send('Hola mundo')
 })
