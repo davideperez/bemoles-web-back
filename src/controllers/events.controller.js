@@ -3,6 +3,7 @@ const {
   getEvent,
   createEventByIdInMongoDB,
   updateEventByIdInMongoDB,
+  deleteEventById,
 } = require("../models/events/events.model");
 const eventsMongo = require("../models/events/events.mongo");
 const {
@@ -93,7 +94,7 @@ async function httpUpdateEvent(req, res) {
 
 async function httpDeleteEvent(req, res) {
   try {
-    const eventFind = await eventsDatabase.findById(req.params.id);
+    const eventFind = await getEvent(req.params.id);
 
     if (!eventFind) return res.status(400).send({ success: false });
 
@@ -101,7 +102,7 @@ async function httpDeleteEvent(req, res) {
       await removeFileToCloudinary(`${eventFind.image}`);
     }
 
-    await eventsDatabase.findByIdAndRemove(req.params.id);
+    await deleteEventById(req.params.id);
 
     return res
       .status(200)
