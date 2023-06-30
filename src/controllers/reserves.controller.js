@@ -1,29 +1,72 @@
-//TODO: leer sobre el pattern interactor para hacer agnositoc los .controller.js y los .model.js
+const {
+    createReserveByIdInMongoDB,
+    getAllReserves,
+    getReserve,
+    updateReserveByIdInMongoDB,
+    deleteReserveById,
+  } = require("../models/reserves/reserves.model");
 
-const { } = require('../models/reserves/reserves.model');
-const reservesMongo = require('../models/reserves/reserves.mongo');
+
+async function httpAddNewReserve(req, res) {
+    try {
+
+        return res.status(201).json(reserveCreated)
+    } catch (error) {
+        return res.status(500).json({
+            error: err.message,
+        })
+    }
+}
 
 
 async function httpGetAllReserves(req, res) {
-    return res.status(200).json(await getAllReserves()); //
-};
+    try {
+        const { search, page, items } = req.query;
+        return res.status(200).json(await getAllReserves(+page, +items, search));
+    } catch (error) {
+        return res.status(500).json({
+            error: err.message,
+        })
+    }
+}
 
-async function httpAddNewReserve(req, res) {
-   
-};
-
-async function httpDeleteReserve (req, res) {
-
+async function httpGetReserve(req, res) {
+    try {
+        return res.status(200).json(await getReserve(req.params.id));
+    } catch (error) {
+        return res.status(500).json({
+            error: err.message,
+        })
+    }
 }
 
 async function httpUpdateReserve (req, res) {
+    try {
 
+        return res.status(201).json(reserveUpdated);
+    } catch (error) {
+        return res.status(500).json({
+            error: err.message,
+        })
+    }
+}
+
+async function httpDeleteReserve (req, res) {
+    try {
+
+        return res.status(200).json({ success: true, message: "the reserve is deleted!" });
+    } catch (error) {
+        return res.status(500).json({
+            error: err.message,
+        })
+    }
 }
 
 
 module.exports = {
-    httpGetAllReserves,
     httpAddNewReserve,
+    httpGetAllReserves,
+    httpGetReserve,
     httpDeleteReserve,
     httpUpdateReserve
 };

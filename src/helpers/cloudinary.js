@@ -7,14 +7,19 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+//CREATE & UPDATE
+
 const uploadFiletoCloudinary = async (image) => {
   try {
     const result = await cloudinary.uploader.upload(image.tempFilePath);
+    console.log(`Este es el objeto que devuelve cloudinary al actualizar una imagen: result: ${result}`)
     return result.secure_url;
   } catch (err) {
     throw err;
   }
 };
+
+//DELETE
 
 const removeFileToCloudinary = async (urlIcon) => {
   try {

@@ -3,13 +3,6 @@ const validator = require("validator");
 
 const eventsSchema = new mongoose.Schema(
   {
-    //TODO: Validar cuales de estos campos son required.
-    //TODO: Armar types propios, ej type evento (type object)
-    /*
-    ejemplo: 
-        type: { type: String, enum: ['PRODUCT', 'TEMPLATE', 'USER', 'WORLD'], },
-    */
-
     title: {
       type: String,
       required: true,
@@ -31,7 +24,7 @@ const eventsSchema = new mongoose.Schema(
     },
     paymentLink: {
       type: String,
-      //TODO: Validar si esta validacion es necesaria.
+      //esta validacion es necesaria. ??
       validate: {
         validator: isURL,
         message: `{VALUE} no es una URL VALIDA`,
@@ -41,14 +34,15 @@ const eventsSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     }
-},  {
+  },  
+  {
     timestamps: true
   },
 );
 
 //TODO: Esta funcionalidad iria aca???s
 function isURL(url) {
-  return validator.isURL(url);
+  return validator.isURL(url)
 }
 
-module.exports = mongoose.model("Event", eventsSchema); // TOCHECK: probar si esta linea se puede poner en una funcion aparte y poenr la funcion como export en module.exports.
+module.exports = mongoose.model("Event", eventsSchema)

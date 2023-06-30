@@ -7,8 +7,8 @@ const path = require('path')
 const morgan = require('morgan')
 const express = require('express')
 const passport = require('passport')
-//const flash = require('express-flash') // chequear si hay librerias para estos avisos !!
-const bodyParser = require('body-parser')// Se podria desinstalar y usar el de express nativo directamente !!
+//const flash = require('express-flash') // Esta libreria hara falta??
+const bodyParser = require('body-parser')// Se podria desinstalar y usar el de express nativo directamente ??
 const session = require('express-session')
 if (process.env.NODE_ENV !== "production") {
     // Load environment variables from .env file in non prod environments
@@ -60,14 +60,14 @@ const corsOptions = {
 //-----------------------------------------------------------------------------------------------------//
 
 //Security
-//TODO: Add the Helmet dependency. ??
+//TODO: Add the Helmet dependency.
 app.use(cors(corsOptions))
 app.use(morgan('dev'));
 app.use(express.json()) // permite que los requests http lean jsons.
 //Enables Express to serve static files 
 app.use(express.static(path.join(__dirname, '..', 'public', 'views')));
 
-//Enables express to receive form data ??
+//Enables express to receive files via forms ??.
 app.use(fileUpLoad({
   useTempFiles : true,
   tempFileDir : '/tmp/'

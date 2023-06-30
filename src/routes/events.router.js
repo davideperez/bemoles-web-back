@@ -1,33 +1,22 @@
-//-----------------------------------------------------------------------------------------------------//
-// Imports //
-//-----------------------------------------------------------------------------------------------------//
-
 const express = require('express');
-const { httpGetAllEvents, httpGetEvent, httpAddNewEvent, httpDeleteEvent, httpUpdateEvent } = require('../controllers/events.controller')
+const {
+    httpAddNewEvent,
+    httpGetAllEvents,
+    httpGetEvent,
+    httpUpdateEvent, 
+    httpToggleEventStatus,
+    httpDeleteEvent, 
+} = require('../controllers/events.controller')
 
-//-----------------------------------------------------------------------------------------------------//
-// varaibles & constants
-//-----------------------------------------------------------------------------------------------------//
 
 const eventsRouter = express.Router()
 
-//-----------------------------------------------------------------------------------------------------//
-// Behaviours
-//-----------------------------------------------------------------------------------------------------//
-
-eventsRouter.get('/:id', httpGetEvent);
-
-eventsRouter.get('/', httpGetAllEvents);
-
 eventsRouter.post('/', httpAddNewEvent);
-
+eventsRouter.get('/', httpGetAllEvents);
+eventsRouter.get('/:id', httpGetEvent);
 eventsRouter.put('/:id', httpUpdateEvent);
-
+eventsRouter.put('/:id/toggle-status', httpToggleEventStatus)
 eventsRouter.delete('/:id', httpDeleteEvent);
 
-
-//-----------------------------------------------------------------------------------------------------//
-// Exports
-//-----------------------------------------------------------------------------------------------------//
 
 module.exports = eventsRouter;

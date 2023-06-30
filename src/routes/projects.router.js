@@ -1,32 +1,20 @@
-//-----------------------------------------------------------------------------------------------------//
-//-----------------------------------------------------------------------------------------------------//
-//-----------------------------------------------------------------------------------------------------//
-// Imports //
-//-----------------------------------------------------------------------------------------------------//
-
-const express = require('express');
-const { httpGetAllProjects, httpAddNewProject, httpDeleteProject, httpUpdateProject } = require('../controllers/projects.controller')
-
-//-----------------------------------------------------------------------------------------------------//
-// varaibles & constants
-//-----------------------------------------------------------------------------------------------------//
+const express = require('express')
+const {
+    httpAddNewProject,
+    httpGetAllProjects,
+    httpGetProject,
+    httpUpdateProject,
+    httpToggleProjectStatus,
+    httpDeleteProject,
+} = require('../controllers/projects.controller')
 
 const projectsRouter = express.Router()
 
-//-----------------------------------------------------------------------------------------------------//
-// Behaviours
-//-----------------------------------------------------------------------------------------------------//
-
-projectsRouter.get('/', httpGetAllProjects); // read.
-
-projectsRouter.post('/', httpAddNewProject);
-
-projectsRouter.post('/:id', httpDeleteProject);
-
-projectsRouter.post('/:id', httpUpdateProject);
-
-//-----------------------------------------------------------------------------------------------------//
-// Exports
-//-----------------------------------------------------------------------------------------------------//
+projectsRouter.post('/', httpAddNewProject)
+projectsRouter.get('/', httpGetAllProjects)
+projectsRouter.get('/:id', httpGetProject)
+projectsRouter.put('/:id', httpUpdateProject)
+projectsRouter.put('/:id/toggle-status', httpToggleProjectStatus)
+projectsRouter.delete('/:id', httpDeleteProject)
 
 module.exports = projectsRouter;

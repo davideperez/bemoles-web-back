@@ -1,32 +1,18 @@
-//-----------------------------------------------------------------------------------------------------//
-//-----------------------------------------------------------------------------------------------------//
-//-----------------------------------------------------------------------------------------------------//
-// Imports //
-//-----------------------------------------------------------------------------------------------------//
-
 const express = require('express');
-const { httpGetAllReserves, httpAddNewReserve, httpDeleteReserve, httpUpdateReserve } = require('../controllers/reserves.controller')
-
-//-----------------------------------------------------------------------------------------------------//
-// varaibles & constants
-//-----------------------------------------------------------------------------------------------------//
+const { 
+    httpAddNewReserve,
+    httpGetAllReserves,
+    httpGetReserve,
+    httpDeleteReserve,
+    httpUpdateReserve
+} = require('../controllers/reserves.controller')
 
 const reservesRouter = express.Router()
 
-//-----------------------------------------------------------------------------------------------------//
-// Behaviours
-//-----------------------------------------------------------------------------------------------------//
-
-reservesRouter.get('/', httpGetAllReserves); // read.
-
 reservesRouter.post('/', httpAddNewReserve);
-
-reservesRouter.post('/:id', httpDeleteReserve);
-
-reservesRouter.post('/:id', httpUpdateReserve);
-
-//-----------------------------------------------------------------------------------------------------//
-// Exports
-//-----------------------------------------------------------------------------------------------------//
+reservesRouter.get('/', httpGetAllReserves);
+reservesRouter.get('/', httpGetReserve);
+reservesRouter.put('/:id', httpUpdateReserve);
+reservesRouter.delete('/:id', httpDeleteReserve);
 
 module.exports = reservesRouter;
