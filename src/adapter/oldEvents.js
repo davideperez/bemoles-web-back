@@ -15,7 +15,7 @@ const convertOldEventDateToDate = (oldEventDate) => {
 };
 
 const adapterOldEventToEvent = (oldEvent) => {
-  if (oldEvent.active) {
+  if (oldEvent.active) { // ?? Emi aca te estas trayendo solo los eventos activos?? Si es asi, no deberiamos traernos todos? Y dejar en gris los inactivos y en blanco los activos? 
     return {
       title: oldEvent.nombre,
       date: convertOldEventDateToDate(`${oldEvent.fecha} ${oldEvent.hora}`),
@@ -26,5 +26,25 @@ const adapterOldEventToEvent = (oldEvent) => {
     };
   }
 };
+
+const adapterOldEventToEventV2 = (oldEvent) => {
+  if (oldEvent.active) { // ?? Emi aca te estas trayendo solo los eventos activos?? Si es asi, no deberiamos traernos todos? Y dejar en gris los inactivos y en blanco los activos? 
+    return {
+      title: oldEvent.nombre,
+      date: convertOldEventDateToDate(`${oldEvent.fecha} ${oldEvent.hora}`),
+      info: oldEvent.info,
+      price: oldEvent.precio,
+      maxAttendance: oldEvent.cupo,
+      paymentLink: oldEvent.linkdepago,
+      active: () => {
+        if (oldEvent.activo == 1) {
+          return true
+        } else {
+          return false
+        }
+      }
+    }
+  }
+}
 
 module.exports = adapterOldEventToEvent;

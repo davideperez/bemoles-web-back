@@ -9,7 +9,6 @@ const {
 
 async function httpAddNewReserve(req, res) {
     try {
-
         return res.status(201).json(reserveCreated)
     } catch (error) {
         return res.status(500).json({

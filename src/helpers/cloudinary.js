@@ -8,7 +8,6 @@ cloudinary.config({
 });
 
 //CREATE & UPDATE
-
 const uploadFiletoCloudinary = async (image) => {
   try {
     const result = await cloudinary.uploader.upload(image.tempFilePath);
@@ -20,7 +19,6 @@ const uploadFiletoCloudinary = async (image) => {
 };
 
 //DELETE
-
 const removeFileToCloudinary = async (urlIcon) => {
   try {
     let url = urlIcon.split("/");
