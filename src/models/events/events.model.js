@@ -23,13 +23,20 @@ async function createEventByIdInMongoDB (event) {
 } 
 
 //READ
-async function getAllEvents (page, items, search) {
+async function getAllEvents (page, items, search, isWorkshop) {
     try {
         const query = {};
         if (search) query.title = { $regex: `${search}`, $options: 'i' };
         
-        const events = await eventsDataBase.find(query, {'__v': 0})
-        .skip((page - 1) * items)
+        if (isWorkshop === 'true') {
+            query.isWorkshop = true;
+          } else if (isWorkshop === 'false') {
+            query.isWorkshop = false;
+        }
+
+        const events = await eventsDataBase
+        .find(query, {'__v': 0})
+        .skip((page - 1) * items) // 
         .limit(items)
         .sort({createdAt: 'desc'});
         

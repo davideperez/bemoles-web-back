@@ -22,7 +22,8 @@ async function httpAddNewEvent(req, res) {
       !event.info ||
       !event.price ||
       !event.maxAttendance ||
-      !event.paymentLink
+      !event.paymentLink ||
+      !event.isWorkshop
     ) {
       return res.status(400).json({
         error: "Falta cargar una de las propiedades del event.",
@@ -49,8 +50,8 @@ async function httpAddNewEvent(req, res) {
 
 async function httpGetAllEvents(req, res) {
   try {
-    const { search, page, items } = req.query;
-    return res.status(200).json(await getAllEvents(+page, +items, search));
+    const { search, page, items, isWorkshop } = req.query;
+      return res.status(200).json(await getAllEvents(+page, +items, search, isWorkshop));
   } catch (err) {
     return res.status(500).json({
       error: err.message,

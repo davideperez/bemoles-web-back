@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const validator = require("validator");
 
 const eventsSchema = new mongoose.Schema(
   {
@@ -24,11 +23,10 @@ const eventsSchema = new mongoose.Schema(
     },
     paymentLink: {
       type: String,
-      //esta validacion es necesaria. ??
-      validate: {
-        validator: isURL,
-        message: `{VALUE} no es una URL VALIDA`,
-        },
+    },
+    isWorkshop: {
+      type: Boolean,
+      default: false,
     },
     active: {
       type: Boolean,
@@ -39,10 +37,5 @@ const eventsSchema = new mongoose.Schema(
     timestamps: true
   },
 );
-
-//TODO: Esta funcionalidad iria aca???s
-function isURL(url) {
-  return validator.isURL(url)
-}
 
 module.exports = mongoose.model("Event", eventsSchema)

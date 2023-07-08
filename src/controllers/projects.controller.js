@@ -9,8 +9,8 @@ const {
     removeFileToCloudinary,
     uploadFiletoCloudinary,
   } = require("../helpers/cloudinary");
-  
 
+  
 async function httpAddNewProject(req, res) {
     try {
         const project = req.body;

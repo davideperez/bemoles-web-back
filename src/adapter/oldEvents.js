@@ -23,6 +23,7 @@ const adapterOldEventToEvent = (oldEvent) => {
       price: oldEvent.precio,
       maxAttendance: oldEvent.cupo,
       paymentLink: oldEvent.linkdepago,
+      isTaller: oldEvent.taller,
     };
   }
 };

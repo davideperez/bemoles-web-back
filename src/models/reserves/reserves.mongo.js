@@ -7,6 +7,10 @@ const reservesSchema = new mongoose.Schema(
         dni: String,
         ticketQuantity: Number,
         email: String,
+        event: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Event',
+        }, 
     },
     {
             timestamps: true

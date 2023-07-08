@@ -8,8 +8,7 @@
     "start": "node ./src/server.js",
     "devStart": "nodemon ./src/server.js",
     "seed": "node ./seeders",
-    "migration": "node./src/adapters/migration.js",
-
+    "migration": "node./src/adapters/migration.js"
   },
   "repository": {
     "type": "git",
