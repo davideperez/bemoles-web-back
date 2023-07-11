@@ -113,7 +113,6 @@ async function httpUpdateEvent(req, res) {
 
 async function httpToggleEventStatus (req, res) {
   try {
-
       const eventFind = await getEvent(req.params.id)
       if (!eventFind) return res.status(400).send({message: "El evento no existe."})
 

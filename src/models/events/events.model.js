@@ -26,6 +26,7 @@ async function createEventByIdInMongoDB (event) {
 async function getAllEvents (page, items, search, isWorkshop) {
     try {
         const query = {};
+        
         if (search) query.title = { $regex: `${search}`, $options: 'i' };
         
         if (isWorkshop === 'true') {
