@@ -116,10 +116,11 @@ async function httpToggleEventStatus (req, res) {
       const eventFind = await getEvent(req.params.id)
       if (!eventFind) return res.status(400).send({message: "El evento no existe."})
 
-      eventFind.active = !eventFind.active
-      await updateEventByIdInMongoDB(req.params.id, eventFind) // o esta linea ??: const projectUpdated = await updateProjectByIdInMongoDB(req.params.id, project)
+      console.log(eventFind.active)
+      const active = !eventFind.active;
+      await updateEventByIdInMongoDB(req.params.id, { active }) // o esta linea ??: const projectUpdated = await updateProjectByIdInMongoDB(req.params.id, project)
 
-      return res.status(200).json({ success: true, message: `El estado del proyecto fue seteado a ${eventFind.active}` });
+      return res.status(200).json({ success: true, message: `El estado del proyecto fue seteado a ${!eventFind.active}` });
 
   } catch (err) {
       return res.status(500).json({

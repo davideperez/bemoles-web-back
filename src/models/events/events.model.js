@@ -39,7 +39,7 @@ async function getAllEvents (page, items, search, isWorkshop) {
         .find(query, {'__v': 0})
         .skip((page - 1) * items) // 
         .limit(items)
-        .sort({createdAt: 'desc'});
+        .sort({date: 'desc'});
         
         const count = await eventsDataBase.find(query).countDocuments();
         
