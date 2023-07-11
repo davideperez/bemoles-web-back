@@ -144,7 +144,14 @@ async function logout(req, res, next) {
 
     await user.save();
 
-    res.clearCookie("refreshToken", COOKIE_OPTIONS);
+    const cookieOptions = {
+      httpOnly: true,
+      sameSite: false,
+      maxAge: 0,
+    };
+
+    // res.clearCookie("refreshToken", COOKIE_OPTIONS);
+    res.cookie("refreshToken", '', cookieOptions);
     res.send({ success: true });
   } catch (error) {
     res.statusCode = 500;
