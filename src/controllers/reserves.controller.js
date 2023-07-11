@@ -6,6 +6,11 @@ const {
     deleteReserveById,
   } = require("../models/reserves/reserves.model");
 
+  const {
+    getEvent,
+    updateEventByIdInMongoDB,
+  } = require("../models/events/events.model");
+
 
 async function httpAddNewReserve(req, res) {
     try {
@@ -25,8 +30,13 @@ async function httpAddNewReserve(req, res) {
             error: "Falta cargar una de las propiedades del event.",
           });
         }
-    
+
         // 2 se restan los cupos del evento ??
+        const event = await getEvent(reserve.event);
+        const maxAttendance = event.maxAttendance - reserve.ticketQuantity;
+        if (event.maxAttendance < 0) throw new Error('El cupo esta completo')
+        updateEventByIdInMongoDB(reserve.event, { maxAttendance })
+
 
         // 3 se envia el mail
         //TBD
