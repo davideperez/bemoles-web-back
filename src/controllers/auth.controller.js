@@ -139,7 +139,7 @@ async function logout(req, res, next) {
     );
 
     if (tokenIndex !== -1) {
-      user.refreshToken.id(user.refreshToken[tokenIndex]._id).remove();
+      await User.findByIdAndUpdate(req.user._id, { $pull: { refreshToken: user.refreshToken[tokenIndex]._id } });
     }
 
     await user.save();
@@ -147,15 +147,16 @@ async function logout(req, res, next) {
     const cookieOptions = {
       httpOnly: true,
       sameSite: false,
+      secure: false,
       maxAge: 0,
+      path: '/',
     };
 
     // res.clearCookie("refreshToken", COOKIE_OPTIONS);
     res.cookie("refreshToken", '', cookieOptions);
     res.send({ success: true });
   } catch (error) {
-    res.statusCode = 500;
-    res.send(error);
+    res.status(500).send({message: error.message});
   }
 }
 

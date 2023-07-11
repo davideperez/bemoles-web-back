@@ -1,4 +1,5 @@
 const express = require('express');
+const { verifyUser } = require('../authenticate');
 const { 
     httpAddNewReserve,
     httpGetAllReserves,
@@ -9,10 +10,10 @@ const {
 
 const reservesRouter = express.Router()
 
-reservesRouter.post('/', httpAddNewReserve);
+reservesRouter.post('/', verifyUser, httpAddNewReserve);
 reservesRouter.get('/', httpGetAllReserves);
 reservesRouter.get('/', httpGetReserve);
-reservesRouter.put('/:id', httpUpdateReserve);
-reservesRouter.delete('/:id', httpDeleteReserve);
+reservesRouter.put('/:id', verifyUser, httpUpdateReserve);
+reservesRouter.delete('/:id', verifyUser, httpDeleteReserve);
 
 module.exports = reservesRouter;

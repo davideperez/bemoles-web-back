@@ -28,6 +28,10 @@ const eventsSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    reserves: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Reserve'
+    }],
     active: {
       type: Boolean,
       default: true,

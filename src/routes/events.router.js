@@ -1,4 +1,5 @@
 const express = require('express');
+const { verifyUser } = require('../authenticate');
 const {
     httpAddNewEvent,
     httpGetAllEvents,
@@ -11,12 +12,12 @@ const {
 
 const eventsRouter = express.Router()
 
-eventsRouter.post('/', httpAddNewEvent);
+eventsRouter.post('/', verifyUser, httpAddNewEvent);
 eventsRouter.get('/', httpGetAllEvents);
 eventsRouter.get('/:id', httpGetEvent);
-eventsRouter.put('/:id', httpUpdateEvent);
-eventsRouter.put('/:id/toggle-status', httpToggleEventStatus)
-eventsRouter.delete('/:id', httpDeleteEvent);
+eventsRouter.put('/:id', verifyUser, httpUpdateEvent);
+eventsRouter.put('/:id/toggle-status', verifyUser, httpToggleEventStatus)
+eventsRouter.delete('/:id', verifyUser, httpDeleteEvent);
 
 
 module.exports = eventsRouter;

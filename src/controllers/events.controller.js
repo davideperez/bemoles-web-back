@@ -22,8 +22,7 @@ async function httpAddNewEvent(req, res) {
       !event.info ||
       !event.price ||
       !event.maxAttendance ||
-      !event.paymentLink ||
-      !event.isWorkshop
+      !event.paymentLink 
     ) {
       return res.status(400).json({
         error: "Falta cargar una de las propiedades del event.",
@@ -37,6 +36,7 @@ async function httpAddNewEvent(req, res) {
       event.image = url;
     }
 
+    event.active = event.active === 'true';
     // 3 se agrega el event a la db en mongo atlas
     const eventCreated = await createEventByIdInMongoDB(event);
 
@@ -99,6 +99,8 @@ async function httpUpdateEvent(req, res) {
       }
 
       console.log({event})
+
+      event.active = event.active === 'true';
 
       //4 ..se actualiza el evento en la db 
       const eventUpdated = await updateEventByIdInMongoDB(req.params.id, event);

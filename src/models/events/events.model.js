@@ -36,7 +36,7 @@ async function getAllEvents (page, items, search, isWorkshop) {
         }
 
         const events = await eventsDataBase
-        .find(query, {'__v': 0})
+        .find(query).populate(['reserves'])
         .skip((page - 1) * items) // 
         .limit(items)
         .sort({date: 'desc'});
@@ -51,7 +51,7 @@ async function getAllEvents (page, items, search, isWorkshop) {
 
 async function getEvent (eventId) {
     try {
-       return await eventsDataBase.findById(eventId);
+       return await eventsDataBase.findById(eventId).populate(['reserves']);
     } catch(err) {
         console.error(`No se pudo traer el evento desde mongoDB: ${err}`)
     }

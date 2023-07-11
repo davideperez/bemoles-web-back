@@ -20,8 +20,6 @@ const fileUpLoad = require('express-fileupload')
 // Imports Propetary
 
 const router = require('./routes/router');
-const { fileLoader } = require('ejs')
-const { verifyUser } = require('./authenticate')
 
 require("./strategies/JwtStrategy")
 require("./strategies/LocalStrategy")
@@ -84,8 +82,7 @@ app.use(session({
   // Aditional Options. 
 }))
 
-app.use(passport.session())
-app.use(passport.initialize())
+
 
 //-----------------------------------------------------------------------------------------------------//
 // Routes (Public) //
@@ -93,9 +90,13 @@ app.use(passport.initialize())
 
 app.use('/api', router); //
 
+app.use(passport.session())
+app.use(passport.initialize())
+
 app.use('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'views', 'index.html'))
   // res.send('Hola mundo')
 })
+
 
 module.exports = app;

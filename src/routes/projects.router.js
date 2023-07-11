@@ -1,4 +1,5 @@
 const express = require('express')
+const { verifyUser } = require('../authenticate')
 const {
     httpAddNewProject,
     httpGetAllProjects,
@@ -10,11 +11,11 @@ const {
 
 const projectsRouter = express.Router()
 
-projectsRouter.post('/', httpAddNewProject)
+projectsRouter.post('/', verifyUser, httpAddNewProject)
 projectsRouter.get('/', httpGetAllProjects)
 projectsRouter.get('/:id', httpGetProject)
-projectsRouter.put('/:id', httpUpdateProject)
-projectsRouter.put('/:id/toggle-status', httpToggleProjectStatus)
-projectsRouter.delete('/:id', httpDeleteProject)
+projectsRouter.put('/:id', verifyUser, httpUpdateProject)
+projectsRouter.put('/:id/toggle-status', verifyUser, httpToggleProjectStatus)
+projectsRouter.delete('/:id', verifyUser, httpDeleteProject)
 
 module.exports = projectsRouter;
