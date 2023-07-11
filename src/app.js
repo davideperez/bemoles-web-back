@@ -24,6 +24,7 @@ const router = require('./routes/router');
 require("./strategies/JwtStrategy")
 require("./strategies/LocalStrategy")
 require("./authenticate")
+// const insertSeeds = require('./seeders')
 
 //-----------------------------------------------------------------------------------------------------//
 // Setups //
@@ -97,6 +98,6 @@ app.use('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'views', 'index.html'))
   // res.send('Hola mundo')
 })
-
+// insertSeeds();
 
 module.exports = app;

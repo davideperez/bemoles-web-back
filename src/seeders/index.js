@@ -1,7 +1,7 @@
 const eventsSeeder = require('./events.seeder');
-const { mongoConnect } = require('./services/mongo')
+// const { mongoConnect } = require('../services/mongo')
 
-await mongoConnect();
+// mongoConnect();
 
 const insertSeeds = async () => {
     await eventsSeeder();
