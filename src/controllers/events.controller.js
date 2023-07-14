@@ -19,10 +19,7 @@ async function httpAddNewEvent(req, res) {
     if ( //?? que onda con el chequeo de q suba con imagen
       !event.title ||
       !event.date ||
-      !event.info ||
-      !event.price ||
-      !event.maxAttendance ||
-      !event.paymentLink 
+      !event.info
     ) {
       return res.status(400).json({
         error: "Falta cargar una de las propiedades del event.",
@@ -37,6 +34,8 @@ async function httpAddNewEvent(req, res) {
     }
 
     event.active = event.active === 'true';
+    event.published = event.published === 'true';
+
     // 3 se agrega el event a la db en mongo atlas
     const eventCreated = await createEventByIdInMongoDB(event);
 
@@ -101,6 +100,7 @@ async function httpUpdateEvent(req, res) {
       console.log({event})
 
       event.active = event.active === 'true';
+      event.published = event.published === 'true';
 
       //4 ..se actualiza el evento en la db 
       const eventUpdated = await updateEventByIdInMongoDB(req.params.id, event);
@@ -118,11 +118,15 @@ async function httpToggleEventStatus (req, res) {
       const eventFind = await getEvent(req.params.id)
       if (!eventFind) return res.status(400).send({message: "El evento no existe."})
 
-      console.log(eventFind.active)
-      const active = !eventFind.active;
-      await updateEventByIdInMongoDB(req.params.id, { active }) // o esta linea ??: const projectUpdated = await updateProjectByIdInMongoDB(req.params.id, project)
+      const event = {};
+      if (req.query.type === 'published') {
+        event.published = !eventFind.published;
+      } else {
+        event.active = !eventFind.active;
+      }
+      await updateEventByIdInMongoDB(req.params.id, event) // o esta linea ??: const projectUpdated = await updateProjectByIdInMongoDB(req.params.id, project)
 
-      return res.status(200).json({ success: true, message: `El estado del proyecto fue seteado a ${!eventFind.active}` });
+      return res.status(200).json({ success: true, message: `El estado del proyecto fue seteado a ${typeof event.active === 'boolean' ? event.active : event.published}` });
 
   } catch (err) {
       return res.status(500).json({
@@ -130,6 +134,8 @@ async function httpToggleEventStatus (req, res) {
       })
   }
 }
+
+
 
 async function httpDeleteEvent(req, res) {
   try {
