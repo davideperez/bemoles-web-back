@@ -13,7 +13,7 @@ passport.serializeUser(function(user, done) {
 
 passport.deserializeUser(async function (id, done) {
     try {
-      console.log('user:', user)
+      console.log('user:', user) //TBD should we delete this console log???
       const user = await User.findById(id);
       done(null, user);
     } catch (error) {

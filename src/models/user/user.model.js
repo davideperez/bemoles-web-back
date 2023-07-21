@@ -28,7 +28,7 @@ const User = new Schema({
     default: 50,
   },
   refreshToken: {
-    type: [Session], // de quien recibe ??
+    type: [Session],
   },
 },{
     timestamps: true
