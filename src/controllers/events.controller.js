@@ -49,8 +49,8 @@ async function httpAddNewEvent(req, res) {
 
 async function httpGetAllEvents(req, res) {
   try {
-    const { search, page, items, isWorkshop, active, upcoming } = req.query;
-      return res.status(200).json(await getAllEvents(+page, +items, search, isWorkshop, active, upcoming));
+    const { search, page, items, isWorkshop, active, upcoming, published } = req.query;
+      return res.status(200).json(await getAllEvents(+page, +items, search, isWorkshop, active, upcoming, published));
   } catch (err) {
     return res.status(500).json({
       error: err.message,

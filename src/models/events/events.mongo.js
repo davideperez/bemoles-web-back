@@ -34,11 +34,11 @@ const eventsSchema = new mongoose.Schema(
     }],
     active: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     published: {
       type: Boolean,
-      default: true,
+      default: false,
     }
   },  
   {
