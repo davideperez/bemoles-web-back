@@ -10,7 +10,7 @@ const {
 
 const reservesRouter = express.Router()
 
-reservesRouter.post('/', verifyUser, httpAddNewReserve);
+reservesRouter.post('/', httpAddNewReserve);
 reservesRouter.get('/', httpGetAllReserves);
 reservesRouter.get('/', httpGetReserve);
 reservesRouter.put('/:id', verifyUser, httpUpdateReserve);
