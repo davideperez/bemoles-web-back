@@ -23,17 +23,17 @@ async function createEventByIdInMongoDB (event) {
 } 
 
 //READ
-async function getAllEvents (page, items, search, isWorkshop) {
+async function getAllEvents (page, items, search, isWorkshop, active, upcoming) {
     try {
         const query = {};
         
         if (search) query.title = { $regex: `${search}`, $options: 'i' };
-        
-        if (isWorkshop === 'true') {
-            query.isWorkshop = true;
-          } else if (isWorkshop === 'false') {
-            query.isWorkshop = false;
-        }
+        if (active) query.active = active === 'true'
+        if (upcoming) {
+            const currentDate = new Date();
+            query.date = { [upcoming === 'true' ? '$gt' : '$lt']: currentDate } }
+
+        query.isWorkshop = isWorkshop === 'true';
 
         const events = await eventsDataBase
         .find(query).populate('reserves')
