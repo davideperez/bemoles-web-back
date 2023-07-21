@@ -21,12 +21,13 @@
             }
 
             .header {
-                background: linear-gradient(to bottom, #3a3a3a, #525252)
+                background: linear-gradient(to bottom, #2b2b2b, #525252);
                 color: #fff;
                 text-align: center;
                 padding: 50px 0;
                 border-radius: 5px 5px 0 0;
                 position: relative;
+                margin-bottom: 20px;
             }
 
             .header h2 {
@@ -43,7 +44,7 @@
             p {
                 margin: 5px 0;
                 color:#000;
-                font-size: 14px
+                font-size: 16px
             }
 
             .event-info {
@@ -93,23 +94,29 @@
                 margin: 5px 0;
                 color: #777;
                 font-size: 12px;
-            }
-
-            img {
-                max-width: 100%;
-                height: auto;
+                align-content: center;
             }
 
             .bemoles-logo {
-                max-width: 20em;
-                max-height: 20em;
+                max-width: 350px;
+                max-height: 350px;
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+
+            .bemoles-iso {
+                max-width: 50px;
+                max-height: 50px;
+                margin-top: 20px;
+                margin-bottom: 20px;
             }
 
             .event-image {
-                max-width: 30em;
-                max-height: 30em;
-                margin-top: 2em;
-                margin-bottom: 2em
+                max-width: 700px;
+                max-height: 650px;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                align-self: center;
             }
 
             .header-background {
@@ -131,13 +138,12 @@
         <div class="container">
             <div class="header">
                 <div class="header-background"></div>
-                <!--  <h1>Los Bemoles</h1>  -->
                 <img class='bemoles-logo'src="https://res.cloudinary.com/dlwra6psn/image/upload/v1689882547/web_resources/bemoles_logo_v9ojyh.png" alt="Bemoles-Logo">
                 <h2>Espacio de Cultura y Encuentro</h2>
             </div>
             <p>Hola ${receiverFirstName} ${receiverLastName},</p>
             <p>Tu reserva fue realizada con éxito.</p>
-            <p>Para completar tu compra, haz clic en el siguiente link de pago:</p>
+            <p>Para completar tu compra, haz clic en el link de pago.</p>
             <div class="event-info">
                 <img src="https://res.cloudinary.com/dlwra6psn/image/upload/v1689873210/clnjfwrlyectgdcv29xn.jpg" alt="Imagen-del-evento" class="event-image"/>
                 <p><strong>Evento:</strong> ${eventTitle}</p>
@@ -148,7 +154,7 @@
 
             <div class="footer">
                 <p>&copy; ${currentYear} Espacio de Cultura y Encuentro Los Bemoles. Todos los derechos reservados.</p>
-                <img src="your-logo.png" alt="Logo" />
+                <img src="https://res.cloudinary.com/dlwra6psn/image/upload/v1689966858/web_resources/iso_w4m7tx.png" alt="Logo" class="bemoles-iso"/>
             </div>
         </div>
     </body>

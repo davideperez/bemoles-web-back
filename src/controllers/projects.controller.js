@@ -59,9 +59,6 @@ async function httpGetAllProjects(req, res) {
 
 async function httpGetProject(req, res) {
     try {
-        //const project = json(await getProject(req.params.id))
-        //console.log(project)
-        console.log('pase por httpGetProject')
         return res.status(200).json(await getProject(req.params.id));
     } catch (err) {
         return res.status(500).json({
