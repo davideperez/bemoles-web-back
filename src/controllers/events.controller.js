@@ -60,7 +60,8 @@ async function httpGetAllEvents(req, res) {
 
 async function httpGetEvent(req, res) {
   try {
-    return res.status(200).json(await getEvent(req.params.id));
+    const eventId = req.params.id
+    return res.status(200).json(await getEvent(eventId));
   } catch (err) {
     return res.status(500).json({
       error: err.message,
@@ -80,25 +81,18 @@ async function httpUpdateEvent(req, res) {
         return res.status(400).send({ message: "El evento no existe" });
       
       // 3 Si el update incluye una imagen nueva..
-
       // el signo de pregunta indica q e la imagen puede o no estar siendo actualizada.
       if (req.files?.image) { 
-
         //.. entonces, si el evento ya tenia imagen, se borra esa vieja imagen de cloudinary..
         if (eventFind.image) await removeFileToCloudinary(`${eventFind.image}`);
-        
         //.. se guarda la imagen nueva en image
         const image = req.files.image;
-        
         // se ejecuta la funcion q guarda la imagen en cloudinary y devuelve la url de la misma.. se guarda esta url en url.
         url = await uploadFiletoCloudinary(image);
-        
         // se asigna al objeto event del request, la url de la nueva imagen.. y..
         event.image = url;
       }
-
       console.log({event})
-
       event.active = event.active === 'true';
       event.published = event.published === 'true';
 
@@ -134,8 +128,6 @@ async function httpToggleEventStatus (req, res) {
       })
   }
 }
-
-
 
 async function httpDeleteEvent(req, res) {
   try {

@@ -1,11 +1,18 @@
 const reservesDataBase = require('./reserves.mongo')
 
-
 //CREATE
 async function createReserveByIdInMongoDB (reserve) {
     try {
         const newReserve = new reservesDataBase(reserve);
         return await newReserve.save();
+    } catch (err) {
+        console.error(`No se pudo crear la reserva en la base de datos: ${err}`)
+    }
+}
+
+async function sendReservationEmail (email, firstName, lastName) {
+    try {
+       
     } catch (err) {
         console.error(`No se pudo crear la reserva en la base de datos: ${err}`)
     }

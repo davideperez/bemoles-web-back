@@ -18,8 +18,6 @@ async function httpAddNewProject(req, res) {
         // 1 se chequea que el project a agregar posea todos los campos requeridos.
         if (
           !project.title ||
-          //!project.pdf ||
-          //!project.image || ?? que onda con el chequeo de q suba con imagen
           !project.category
         ) {
           return res.status(400).json({
@@ -77,7 +75,6 @@ async function httpUpdateProject (req, res) {
         const project = req.body
 
         const projectFind = await getProject(req.params.id)
-        
         if (!projectFind) return res.status(400).send({message: "El proyecto no existe."})
         
         if(req.files?.image) {
