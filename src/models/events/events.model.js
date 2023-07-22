@@ -23,12 +23,13 @@ async function createEventByIdInMongoDB (event) {
 } 
 
 //READ
-async function getAllEvents (page, items, search, isWorkshop, active, upcoming) {
+async function getAllEvents (page, items, search, isWorkshop, active, upcoming, published) {
     try {
         const query = {};
         
         if (search) query.title = { $regex: `${search}`, $options: 'i' };
         if (active) query.active = active === 'true'
+        if (published) query.published = published === 'true'
         if (upcoming) {
             const currentDate = new Date();
             query.date = { [upcoming === 'true' ? '$gt' : '$lt']: currentDate } }
