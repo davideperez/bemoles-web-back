@@ -83,12 +83,12 @@ async function httpUpdateEvent(req, res) {
       // 3 Si el update incluye una imagen nueva..
       // el signo de pregunta indica q e la imagen puede o no estar siendo actualizada.
       if (req.files?.image) { 
-        //.. entonces, si el evento ya tenia imagen, se borra esa vieja imagen de cloudinary..
+        //si el evento ya tenia imagen, borra la imagen vieja de cloudinary..
         if (eventFind.image) await removeFileToCloudinary(`${eventFind.image}`);
-        //.. se guarda la imagen nueva en image
+        //guarda la imagen nueva en en el objeto local image.
         const image = req.files.image;
-        // se ejecuta la funcion q guarda la imagen en cloudinary y devuelve la url de la misma.. se guarda esta url en url.
-        url = await uploadFiletoCloudinary(image);
+        // guarda la imagen nueva en cloudinary y devuelve la url. Se guarda esta url en la variable local url.
+        url = await uploadFiletoCloudinary(image); // 
         // se asigna al objeto event del request, la url de la nueva imagen.. y..
         event.image = url;
       }
@@ -98,7 +98,7 @@ async function httpUpdateEvent(req, res) {
 
       //4 ..se actualiza el evento en la db 
       const eventUpdated = await updateEventByIdInMongoDB(req.params.id, event);
-      
+
       return res.status(201).json(eventUpdated);
     } catch (err) {
       return res.status(500).json({
