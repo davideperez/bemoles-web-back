@@ -40,7 +40,9 @@ async function httpAddNewReserve(req, res) {
     const event = await getEvent(reserve.event);
     const maxAttendance = event.maxAttendance - reserve.ticketQuantity;
 
-    if (event.maxAttendance < 0) throw new Error("El cupo esta completo");
+    // if (event.maxAttendance < 10) await sendMaxAttendanceEmail(maxAttendance, event); // TO DO: Notificar a Gabriel cuando quedan menos de 10 entradas
+
+    if (maxAttendance < 0) return res.status(409).json({message:"El cupo esta completo"});
 
     //2.5 se agrega el id de la reserva al array eventos.reserves
 
