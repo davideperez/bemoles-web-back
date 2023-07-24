@@ -7,7 +7,6 @@ const path = require('path')
 const morgan = require('morgan')
 const express = require('express')
 const passport = require('passport')
-//const flash = require('express-flash') // Esta libreria hara falta??
 const bodyParser = require('body-parser')// Se podria desinstalar y usar el de express nativo directamente ??
 const session = require('express-session')
 if (process.env.NODE_ENV !== "production") {

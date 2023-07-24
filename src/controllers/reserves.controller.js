@@ -15,6 +15,10 @@ const {
   sendReserveConfirmationEmail,
 } = require("../templates/reserve-confirmation");
 
+const {
+  sendStockAlertEmail,
+} = require('../templates/stock-alert')
+
 async function httpAddNewReserve(req, res) {
   try {
     const reserve = req.body;
@@ -40,7 +44,7 @@ async function httpAddNewReserve(req, res) {
     const event = await getEvent(reserve.event);
     const maxAttendance = event.maxAttendance - reserve.ticketQuantity;
 
-    // if (event.maxAttendance < 10) await sendMaxAttendanceEmail(maxAttendance, event); // TO DO: Notificar a Gabriel cuando quedan menos de 10 entradas
+    if (event.maxAttendance < 10) await sendStockAlertEmail(event); // TO DO: Notificar a Gabriel cuando quedan menos de 10 entradas
 
     if (maxAttendance < 0) return res.status(409).json({message:"El cupo esta completo"});
 
