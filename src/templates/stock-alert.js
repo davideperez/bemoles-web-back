@@ -5,7 +5,7 @@ function getCurrentYear() {
     return new Date().getFullYear();
 }
 
-async function sendStockAlertEmail(event) {
+async function sendStockAlertEmail(event, ticketsAvailable) {
     
     const { title: eventTitle , date: eventDate, image, maxAttendance: eventStock } = event
 
@@ -34,6 +34,8 @@ async function sendStockAlertEmail(event) {
     }
 
     const upperCasedDate = capitalizeFirstLetter(formattedDate);
+
+    const receipientsList = `${process.env.ALERT_EMAIL_RECEIVER_DEV}, ${process.env.ALERT_EMAIL_RECEIVER_ADMIN}`
 
     //Email Template
     const emailHtml = `
@@ -151,8 +153,8 @@ async function sendStockAlertEmail(event) {
             }
 
             .event-image {
-                max-width: 700px;
-                max-height: 650px;
+                max-width: 65%;
+                max-height: 65%;
                 margin-top: 20px;
                 margin-bottom: 20px;
                 align-self: center;
@@ -184,13 +186,13 @@ async function sendStockAlertEmail(event) {
                 <h2 class='red-text'>Hay un evento con minimo de stock.</h2>
             </div>
                 <p>El evento <strong>"${eventTitle}"</strong> ha superado el mínimo de entradas disponibles en stock. </p>
-                <p> Tiene actualmente: <strong>"${eventStock}"</strong> entradas disponibles.</p>
+                <p> Tiene actualmente: <strong>"${ticketsAvailable}"</strong> entradas disponibles.</p>
             <div class="event-info">
                 <img src="${image}" alt="Imagen-del-evento" class="event-image"/>
                 <p><strong>Evento:</strong> ${eventTitle}</p>
                 <p><strong>Fecha:</strong> ${upperCasedDate}</p>
                 <p><strong>Horario:</strong> ${formattedTime}</p>
-                <p class='red-text'><strong>Entradas disponibles:</strong> ${eventStock}</p>
+                <p class='red-text'><strong>Entradas disponibles:</strong> ${ticketsAvailable}</p>
 
             <div class="footer">
                 <p>&copy; ${currentYear} Espacio de Cultura y Encuentro Los Bemoles. Todos los derechos reservados.</p>
@@ -214,7 +216,7 @@ async function sendStockAlertEmail(event) {
         //it returns if the information was sent or not, if it wass succesful or not. 
         const info = await transporterSettings.sendMail({
             from: `${process.env.SENDER_NAME} <${process.env.SENDER_EMAIL}>`,
-            to: process.env.ALERT_EMAIL_RECEIVER,
+            to: receipientsList,
             subject: 'Evento sin stock',
             html: emailHtml
         })

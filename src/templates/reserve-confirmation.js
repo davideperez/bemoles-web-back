@@ -151,8 +151,8 @@ async function sendReserveConfirmationEmail(reserve, event) {
             }
 
             .event-image {
-                max-width: 700px;
-                max-height: 650px;
+                max-width: 65%;
+                max-height: 65%;
                 margin-top: 20px;
                 margin-bottom: 20px;
                 align-self: center;

@@ -112,8 +112,8 @@
             }
 
             .event-image {
-                max-width: 700px;
-                max-height: 650px;
+                max-width: 350px;
+                max-height: 350px;
                 margin-top: 20px;
                 margin-bottom: 20px;
                 align-self: center;
@@ -145,13 +145,13 @@
                 <h2 class='red-text'>Hay un evento con minimo de stock.</h2>
             </div>
                 <p>El evento <strong>"${eventTitle}"</strong> ha superado el mínimo de entradas disponibles en stock. </p>
-                <p> Tiene actualmente: <strong>"${eventStock}"</strong> entradas disponibles.</p>
+                <p> Tiene actualmente: <strong>"${ticketsAvailable}"</strong> entradas disponibles.</p>
             <div class="event-info">
                 <img src="${image}" alt="Imagen-del-evento" class="event-image"/>
                 <p><strong>Evento:</strong> ${eventTitle}</p>
                 <p><strong>Fecha:</strong> ${upperCasedDate}</p>
                 <p><strong>Horario:</strong> ${formattedTime}</p>
-                <p class='red-text'><strong>Entradas disponibles:</strong> ${eventStock}</p>
+                <p class='red-text'><strong>Entradas disponibles:</strong> ${ticketsAvailable}</p>
 
             <div class="footer">
                 <p>&copy; ${currentYear} Espacio de Cultura y Encuentro Los Bemoles. Todos los derechos reservados.</p>

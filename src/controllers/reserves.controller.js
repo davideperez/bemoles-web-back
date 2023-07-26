@@ -46,15 +46,17 @@ async function httpAddNewReserve(req, res) {
       const reservesLengthUpdated = reservesLength + reserve.ticketQuantity;
       return reservesLengthUpdated;
     }, 0)
-    
+
     const ticketsAvailable = event.maxAttendance - ticketsReserved;
 
-    console.log(`el cupo maximo del evento es: ${event.maxAttendance}, las entradas reservadas: ${ticketsReserved}, la disponibilidad:${ticketsAvailable} `)
+    console.log(`el cupo maximo del evento es: ${event.maxAttendance}, las entradas reservadas: ${ticketsReserved}, la disponibilidad antes de reservar: ${ticketsAvailable}.`)
     
-    if (ticketsAvailable < 10) await sendStockAlertEmail(event); // TO DO: Notificar a Gabriel cuando quedan menos de 10 entradas
+    // Si el stock es menor a 10 entradas luego de la reserva:
 
+    
     if (ticketsAvailable < 0) return res.status(409).json({message:"El cupo esta completo"});
-
+    
+    if (ticketsAvailable < 10) await sendStockAlertEmail(event, ticketsAvailable); // TO DO: Notificar a Gabriel cuando quedan menos de 10 entradas
     //2.5 se agrega el id de la reserva al array eventos.reserves
 
     // 3 se envia el mail
