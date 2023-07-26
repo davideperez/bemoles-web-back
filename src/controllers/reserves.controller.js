@@ -17,7 +17,7 @@ const {
 
 const {
   sendStockAlertEmail,
-} = require('../templates/stock-alert')
+} = require('../templates/stock-alert');
 
 async function httpAddNewReserve(req, res) {
   try {
@@ -39,14 +39,21 @@ async function httpAddNewReserve(req, res) {
           message: "Falta cargar una de las propiedades del event.",
         });
     }
-
     // 2 se restan los cupos del evento ??
     const event = await getEvent(reserve.event);
-    const maxAttendance = event.maxAttendance - reserve.ticketQuantity;
+    console.log(event)
+    const ticketsReserved = [...event.reserves, reserve].reduce((reservesLength, reserve) => {
+      const reservesLengthUpdated = reservesLength + reserve.ticketQuantity;
+      return reservesLengthUpdated;
+    }, 0)
+    
+    const ticketsAvailable = event.maxAttendance - ticketsReserved;
 
-    if (event.maxAttendance < 10) await sendStockAlertEmail(event); // TO DO: Notificar a Gabriel cuando quedan menos de 10 entradas
+    console.log(`el cupo maximo del evento es: ${event.maxAttendance}, las entradas reservadas: ${ticketsReserved}, la disponibilidad:${ticketsAvailable} `)
+    
+    if (ticketsAvailable < 10) await sendStockAlertEmail(event); // TO DO: Notificar a Gabriel cuando quedan menos de 10 entradas
 
-    if (maxAttendance < 0) return res.status(409).json({message:"El cupo esta completo"});
+    if (ticketsAvailable < 0) return res.status(409).json({message:"El cupo esta completo"});
 
     //2.5 se agrega el id de la reserva al array eventos.reserves
 
@@ -57,13 +64,13 @@ async function httpAddNewReserve(req, res) {
     const reserveCreated = await createReserveByIdInMongoDB(reserve);
 
     await updateEventByIdInMongoDB(reserve.event, {
-      $set: { maxAttendance },
       $push: { reserves: reserveCreated._id.toString() },
     });
 
     await sendReserveConfirmationEmail(reserve, event);
     return res.status(201).json(reserveCreated);
   } catch (err) {
+    console.log(err)
     return res.status(500).json({
       error: err.message,
     });
