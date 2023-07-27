@@ -45,7 +45,7 @@ async function getAllEvents(
 
     query.isWorkshop = isWorkshop === "true";
     const sort =
-      isWorkshop === "true" ? { createdAt: "desc" } : { date: "desc" };
+      isWorkshop === "true" ? { createdAt: "desc" } : { date: `${upcoming === "true" ? 'asc' : 'desc'}` };
 
     const events = await eventsDataBase
       .find(query)
