@@ -7,6 +7,13 @@ const reservesSchema = new mongoose.Schema(
         dni: String,
         ticketQuantity: Number,
         email: String,
+        MPPreferenceId: String,
+        paymentLink: String,
+        paymentStatus: {
+            enum: ['NOT_PAID', 'FAILURE', 'PENDING', 'SUCCESS'],
+            type: String,
+            default: 'NOT_PAID',
+        },
         event: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Event',

@@ -46,6 +46,14 @@ async function getReserve (reserveId) {
     }
 }
 
+async function getReserveByQuery (query) {
+    try {
+       return await reservesDataBase.findOne(query);
+    } catch(err) {
+        console.error(`No se pudo traer la reserva desde mongoDB: ${err}`)
+    }
+}
+
 //UPDATE
 async function updateReserveByIdInMongoDB (reserveId, reserve) {
     try {
@@ -68,6 +76,7 @@ module.exports = {
     createReserveByIdInMongoDB,
     getAllReserves,
     getReserve,
+    getReserveByQuery,
     updateReserveByIdInMongoDB,
     deleteReserveById,
 }

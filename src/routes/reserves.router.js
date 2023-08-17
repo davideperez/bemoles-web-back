@@ -5,12 +5,16 @@ const {
     httpGetAllReserves,
     httpGetReserve,
     httpDeleteReserve,
-    httpUpdateReserve
+    httpUpdateReserve,
+    httpPaymentReserveNotification,
+    httpGetFeedbackReserve
 } = require('../controllers/reserves.controller')
 
 const reservesRouter = express.Router()
 
 reservesRouter.post('/', httpAddNewReserve);
+reservesRouter.get('/feedback', httpGetFeedbackReserve);
+reservesRouter.get('/mpnotification', httpPaymentReserveNotification);
 reservesRouter.get('/', httpGetAllReserves);
 reservesRouter.get('/', httpGetReserve);
 reservesRouter.put('/:id', verifyUser, httpUpdateReserve);

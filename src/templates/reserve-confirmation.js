@@ -1,42 +1,47 @@
-const nodeMailer = require('nodemailer')
-require("dotenv").config()
+const nodeMailer = require("nodemailer");
+require("dotenv").config();
 
 function getCurrentYear() {
-    return new Date().getFullYear();
+  return new Date().getFullYear();
 }
 
 async function sendReserveConfirmationEmail(reserve, event) {
-    
-    const { title: eventTitle , date: eventDate , paymentLink: eventPaymentLink, image } = event
-    const { email: receiverEmail, firstName: receiverFirstName, lastName: receiverLastName, ticketQuantity } = reserve
-    const currentYear = getCurrentYear()
+  const { title: eventTitle, date: eventDate, image } = event;
+  const {
+    email: receiverEmail,
+    firstName: receiverFirstName,
+    lastName: receiverLastName,
+    ticketQuantity,
+    paymentLink: eventPaymentLink,
+  } = reserve;
+  const currentYear = getCurrentYear();
 
-    // Date and Time formatting:
-    const eventDateTime = new Date(eventDate);
+  // Date and Time formatting:
+  const eventDateTime = new Date(eventDate);
 
-    const dateOptions = {
-        weekday: 'long',    // Displays the day of the week in long format (e.g., "Miercoles")
-        day: 'numeric',     // Displays the day of the month (e.g., "19")
-        month: 'long',      // Displays the month in long format (e.g., "Julio")
-        year: 'numeric',    // Displays the full year (e.g., "2023")
-    };
+  const dateOptions = {
+    weekday: "long", // Displays the day of the week in long format (e.g., "Miercoles")
+    day: "numeric", // Displays the day of the month (e.g., "19")
+    month: "long", // Displays the month in long format (e.g., "Julio")
+    year: "numeric", // Displays the full year (e.g., "2023")
+  };
 
-    const timeOptions = {
-        hour: '2-digit',    // Displays the hours in 2-digit format (e.g., "12")
-        minute: '2-digit',  // Displays the minutes in 2-digit format (e.g., "49")
-    };
+  const timeOptions = {
+    hour: "2-digit", // Displays the hours in 2-digit format (e.g., "12")
+    minute: "2-digit", // Displays the minutes in 2-digit format (e.g., "49")
+  };
 
-    const formattedDate = eventDateTime.toLocaleString('es-ES', dateOptions);
-    const formattedTime = eventDateTime.toLocaleString('es-ES', timeOptions);
+  const formattedDate = eventDateTime.toLocaleString("es-ES", dateOptions);
+  const formattedTime = eventDateTime.toLocaleString("es-ES", timeOptions);
 
-    function capitalizeFirstLetter(str) {
-        return str.replace(/\b\w/g, l => l.toUpperCase());
-    }
+  function capitalizeFirstLetter(str) {
+    return str.replace(/\b\w/g, (l) => l.toUpperCase());
+  }
 
-    const upperCasedDate = capitalizeFirstLetter(formattedDate);
+  const upperCasedDate = capitalizeFirstLetter(formattedDate);
 
-    //Email Template
-    const emailHtml = `
+  //Email Template
+  const emailHtml = `
     <html>
     <head>
         <style>
@@ -181,7 +186,7 @@ async function sendReserveConfirmationEmail(reserve, event) {
                 <h2>Espacio de Cultura y Encuentro</h2>
             </div>
             <p>Hola ${receiverFirstName} ${receiverLastName},</p>
-            <p>Tu reserva fue realizada con éxito.</p>
+            <p>Tu reserva fue realizada con éxito y expira en 48hs si no se completa el pago.</p>
             <p>Para completar tu compra, haz clic en el link de pago.</p>
             <div class="event-info">
                 <img src="${image}" alt="Imagen-del-evento" class="event-image"/>
@@ -198,33 +203,31 @@ async function sendReserveConfirmationEmail(reserve, event) {
         </div>
     </body>
 </html>
-`
+`;
 
-    const transporterSettings = nodeMailer.createTransport({
-        host: process.env.EMAIL_SERVER,
-        port: 465,
-        secure: true,
-        auth: {
-            user: process.env.SENDER_EMAIL,
-            pass: process.env.SENDER_PASS,
-        }
-    })
-    try {
-        //it returns if the information was sent or not, if it wass succesful or not. 
-        const info = await transporterSettings.sendMail({
-            from: `${process.env.SENDER_NAME} <${process.env.SENDER_EMAIL}>`,
-            to: receiverEmail,
-            subject: 'Reservas - Los Bemoles',
-            html: emailHtml
-        })
-        
-        console.log("Message sent. messageId: " + info.messageId)
-    } catch (err) {
-        console.log(err.message)
-        return err
-    }
+  const transporterSettings = nodeMailer.createTransport({
+    host: process.env.EMAIL_SERVER,
+    port: 465,
+    secure: true,
+    auth: {
+      user: process.env.SENDER_EMAIL,
+      pass: process.env.SENDER_PASS,
+    },
+  });
+  try {
+    //it returns if the information was sent or not, if it wass succesful or not.
+    const info = await transporterSettings.sendMail({
+      from: `${process.env.SENDER_NAME} <${process.env.SENDER_EMAIL}>`,
+      to: receiverEmail,
+      subject: "Reservas - Los Bemoles",
+      html: emailHtml,
+    });
 
-
+    console.log("Message sent. messageId: " + info.messageId);
+  } catch (err) {
+    console.log(err.message);
+    return err;
+  }
 }
 
-module.exports = {sendReserveConfirmationEmail}
+module.exports = { sendReserveConfirmationEmail };
