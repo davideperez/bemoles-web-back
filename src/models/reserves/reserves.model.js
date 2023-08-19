@@ -40,7 +40,7 @@ async function getAllReserves (page, items, search) {
 //READ
 async function getReserve (reserveId) {
     try {
-       return await reservesDataBase.findById(reserveId);
+       return await reservesDataBase.findById(reserveId).populate(['event']);
     } catch(err) {
         console.error(`No se pudo traer la reserva desde mongoDB: ${err}`)
     }
@@ -48,7 +48,7 @@ async function getReserve (reserveId) {
 
 async function getReserveByQuery (query) {
     try {
-       return await reservesDataBase.findOne(query);
+       return await reservesDataBase.findOne(query).populate(['event']);
     } catch(err) {
         console.error(`No se pudo traer la reserva desde mongoDB: ${err}`)
     }

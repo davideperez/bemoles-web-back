@@ -1,5 +1,5 @@
 const mercadopago = require("mercadopago");
-const { PAYMENT_STATUS, MP_PAYMENT_STATUS } = require("../lib/types/enums/paymentStatus")
+const { PAYMENT_STATUS } = require("../lib/types/enums/paymentStatus");
 const {
   createReserveByIdInMongoDB,
   getAllReserves,
@@ -19,7 +19,15 @@ const {
 } = require("../templates/reserve-confirmation");
 
 const { sendStockAlertEmail } = require("../templates/stock-alert");
-const { validateReserveExpiration, getExpirationDate } = require("../helpers/validateReserves");
+const {
+  isExpiratedReserve,
+  getExpirationDate,
+  getFormatedDate,
+} = require("../helpers/validateReserves");
+const { adapterMPPaymentStatus } = require("../adapter/paymentStatus");
+const {
+  sendPaymentConfirmationEmail,
+} = require("../templates/payment-confirmation");
 
 mercadopago.configure({
   access_token: process.env.MP_ACCESS_TOKEN,
@@ -56,27 +64,32 @@ async function httpAddNewReserve(req, res) {
         },
       ],
       back_urls: {
-        success: `${process.env.URL_FRONTEND}/feedback/${event._id}/success`,
-        failure: `${process.env.URL_FRONTEND}/feedback/${event._id}/failure`,
-        pending: `${process.env.URL_FRONTEND}/feedback/${event._id}/pending`,
+        success: `${process.env.URL_FRONTEND}/feedback/${event._id}`,
+        failure: `${process.env.URL_FRONTEND}/feedback/${event._id}`,
+        pending: `${process.env.URL_FRONTEND}/feedback/${event._id}`,
       },
       auto_return: "approved",
-      // expires: true,
-      // expiration_date_from: new Date().toISOString(),
-      // expiration_date_to: getExpirationDate(new Date(), 48).toISOString(),
+      expires: true,
+      expiration_date_from: getFormatedDate(new Date()),
+      expiration_date_to: getFormatedDate(getExpirationDate(new Date())),
     };
 
     const response = await mercadopago.preferences.create(preference);
     reserve.MPPreferenceId = response.body.id;
     reserve.paymentLink = response.body.sandbox_init_point;
     reserve.paymentStatus = PAYMENT_STATUS.NOT_PAID;
-    console.log({reserve})
-    
+    console.log({ reserve });
+
     // 3 Se calcula el stock disponible
     const ticketsReserved = [...event.reserves, reserve].reduce(
       (reservesLength, reserve) => {
-        const isValidatedReserve = validateReserveExpiration(reserve.createdAt) || [PAYMENT_STATUS.PENDING, PAYMENT_STATUS.SUCCESS].includes(reserve.paymentStatus)
-        const reservesLengthUpdated = reservesLength + (isValidatedReserve ? reserve.ticketQuantity : 0);
+        const isValidatedReserve =
+          !isExpiratedReserve(reserve.createdAt) ||
+          [PAYMENT_STATUS.PENDING, PAYMENT_STATUS.SUCCESS].includes(
+            reserve.paymentStatus
+          );
+        const reservesLengthUpdated =
+          reservesLength + (isValidatedReserve ? reserve.ticketQuantity : 0);
         return reservesLengthUpdated;
       },
       0
@@ -102,7 +115,7 @@ async function httpAddNewReserve(req, res) {
     await updateEventByIdInMongoDB(reserve.event, {
       $push: { reserves: reserveCreated._id.toString() },
     });
-    
+
     await sendReserveConfirmationEmail(reserve, event);
     return res.status(201).json(reserveCreated);
   } catch (err) {
@@ -158,45 +171,61 @@ async function httpDeleteReserve(req, res) {
 
 async function httpPaymentReserveNotification(req, res) {
   try {
-  res.status(200).send('OK');
-  if (req.body.type == "test"){
-      console.log('Notificación de pago de prueba recibida')
+    console.log("body:", req.body);
+    const payment = await mercadopago.payment.findById(req.body.data.id);
+    res.status(200).send("OK");
+    if (req.body.type == "test") {
+      console.log("Notificación de pago de prueba recibida");
+    } else if (req.body.data.id) {
+      const merchantOrder = await mercadopago.merchant_orders.findById(
+        payment.body.order.id
+      );
+      const MPPreferenceId = merchantOrder.body.preference_id;
+      const status = payment.body.status;
+      const reserve = await getReserveByQuery({ MPPreferenceId });
+      console.log("reserve:", reserve);
+      if (!reserve)
+        throw new Error(
+          "La reserva no ha sido encontrada por su campo MPPreferenceId"
+        );
+      console.log(
+        `El estado del pago en mercadopago para la reserva del evento ${reserve.event.title} es ${status}`
+      );
+      const paymentStatusKey = adapterMPPaymentStatus(status);
+      await updateReserveByIdInMongoDB(
+        reserve._id,
+        {
+          paymentStatus: PAYMENT_STATUS[paymentStatusKey],
+        },
+        { new: true }
+      );
+      if (PAYMENT_STATUS[paymentStatusKey] === PAYMENT_STATUS.SUCCESS)
+        await mercadopago.preferences.update({
+          id: MPPreferenceId,
+          expiration_date_to: getFormatedDate(new Date()),
+        });
+      await sendPaymentConfirmationEmail(reserve, reserve.event);
+    }
+  } catch (err) {
+    console.log(
+      "Ha ocurrido un error en la validación de un pago con el webhook de mercadopago:",
+      err
+    );
   }
-  else if (req.body.data.id) {
-  const payment = await mercadopago.payment.findById(req.body.data.id);
-  const merchantOrder = await mercadopago.merchant_orders.findById(payment.body.order.id);
-  const MPPreferenceId = merchantOrder.body.preference_id;
-  const status = payment.body.status;
-  const reserve = await getReserveByQuery({ MPPreferenceId });
-  if (!reserve) throw new Error('La reserva no ha sido encontrada por su campo MPPreferenceId')
-  console.log(`El estado del pago en mercadopago para la reserva del evento ${reserve.event.name} es ${status}`)
-  const paymentStatusKey = Object.entries(MP_PAYMENT_STATUS).find(e => e[1] === status)[0];
-  await updateReserveByIdInMongoDB(
-    reserve._id,
-      {
-        paymentStatus: PAYMENT_STATUS[paymentStatusKey],
-      },
-      { new: true}
-  )
-  }
-} catch (err) {
-  console.log('Ha ocurrido un error en la validación de un pago con el webhook de mercadopago:', err);
 }
-};
 
 async function httpGetFeedbackReserve(req, res) {
   try {
-  const payment = await mercadopago.payment.findById(req.query.payment_id);
-  // const merchantOrder = await mercadopago.merchant_orders.findById(payment.body.order.id);
-  // const preferenceId = merchantOrder.body.preference_id;
-  console.log(preferenceId)
-  const status = payment.body.status;
-  const paymentStatusKey = Object.entries(MP_PAYMENT_STATUS).find(e => e[1] === status)[0];
-  res.status(200).send({status: PAYMENT_STATUS[paymentStatusKey]});
+    const payment = await mercadopago.payment.findById(req.query.payment_id);
+    // const merchantOrder = await mercadopago.merchant_orders.findById(payment.body.order.id);
+    // const preferenceId = merchantOrder.body.preference_id;
+    const status = payment.body.status;
+    const paymentStatusKey = adapterMPPaymentStatus(status);
+    res.status(200).send({ status: PAYMENT_STATUS[paymentStatusKey] });
   } catch (err) {
-    console.log('Ha ocurrido un error en la validación del pago - ', err);
+    console.log("Ha ocurrido un error en la validación del pago - ", err);
   }
-};
+}
 
 module.exports = {
   httpAddNewReserve,
@@ -205,5 +234,5 @@ module.exports = {
   httpDeleteReserve,
   httpUpdateReserve,
   httpPaymentReserveNotification,
-  httpGetFeedbackReserve
+  httpGetFeedbackReserve,
 };

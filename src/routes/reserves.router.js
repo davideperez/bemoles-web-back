@@ -12,11 +12,11 @@ const {
 
 const reservesRouter = express.Router()
 
+reservesRouter.post('/mpnotification', httpPaymentReserveNotification);
 reservesRouter.post('/', httpAddNewReserve);
 reservesRouter.get('/feedback', httpGetFeedbackReserve);
-reservesRouter.get('/mpnotification', httpPaymentReserveNotification);
+reservesRouter.get('/:id', httpGetReserve);
 reservesRouter.get('/', httpGetAllReserves);
-reservesRouter.get('/', httpGetReserve);
 reservesRouter.put('/:id', verifyUser, httpUpdateReserve);
 reservesRouter.delete('/:id', verifyUser, httpDeleteReserve);
 
