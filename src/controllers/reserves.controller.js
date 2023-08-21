@@ -194,10 +194,19 @@ async function httpPaymentReserveNotification(req, res) {
         `El estado del pago en mercadopago para la reserva del evento ${reserve.event.title} es ${status}`
       );
       const paymentStatusKey = adapterMPPaymentStatus(status);
+      const paymentIdExist = reserve.payments.some(
+        (p) => p.paymentId === req.body.data.id.toString()
+      );
       await updateReserveByIdInMongoDB(
         reserve._id,
         {
-          $addToSet: { payments: { paymentId: req.body.data.id.toString() } },
+          ...(paymentIdExist
+            ? {}
+            : {
+                $push: {
+                  payments: { paymentId: req.body.data.id.toString() },
+                },
+              }),
           paymentStatus: PAYMENT_STATUS[paymentStatusKey],
         },
         { new: true }
@@ -223,7 +232,7 @@ async function httpGetFeedbackReserve(req, res) {
     const payment = await mercadopago.payment.findById(req.query.payment_id);
     // const merchantOrder = await mercadopago.merchant_orders.findById(payment.body.order.id);
     // const preferenceId = merchantOrder.body.preference_id;
-    if (!payment?.body?.status) throw new Error('No se ha encontrado el pago');
+    if (!payment?.body?.status) throw new Error("No se ha encontrado el pago");
     const status = payment.body.status;
     const paymentStatusKey = adapterMPPaymentStatus(status);
     res.status(200).send({ status: PAYMENT_STATUS[paymentStatusKey] });
