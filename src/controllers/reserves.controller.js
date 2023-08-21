@@ -220,6 +220,7 @@ async function httpPaymentReserveNotification(req, res) {
 
 async function httpGetFeedbackReserve(req, res) {
   try {
+    if (req.query.payment_id === "null") throw new Error('No se ha encontrado el pago');
     const payment = await mercadopago.payment.findById(req.query.payment_id);
     // const merchantOrder = await mercadopago.merchant_orders.findById(payment.body.order.id);
     // const preferenceId = merchantOrder.body.preference_id;
