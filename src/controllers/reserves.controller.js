@@ -223,11 +223,15 @@ async function httpGetFeedbackReserve(req, res) {
     const payment = await mercadopago.payment.findById(req.query.payment_id);
     // const merchantOrder = await mercadopago.merchant_orders.findById(payment.body.order.id);
     // const preferenceId = merchantOrder.body.preference_id;
+    if (!payment?.body?.status) throw new Error('No se ha encontrado el pago');
     const status = payment.body.status;
     const paymentStatusKey = adapterMPPaymentStatus(status);
     res.status(200).send({ status: PAYMENT_STATUS[paymentStatusKey] });
   } catch (err) {
     console.log("Ha ocurrido un error en la validación del pago - ", err);
+    return res.status(500).json({
+      error: err.message,
+    });
   }
 }
 
@@ -256,6 +260,9 @@ async function httpGetReservePayment(req, res) {
     res.status(200).send(payments);
   } catch (err) {
     console.log("Ha ocurrido un error en la validación del pago - ", err);
+    return res.status(500).json({
+      error: err.message,
+    });
   }
 }
 
