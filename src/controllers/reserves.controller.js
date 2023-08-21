@@ -197,7 +197,7 @@ async function httpPaymentReserveNotification(req, res) {
       await updateReserveByIdInMongoDB(
         reserve._id,
         {
-          $push: { payments: { paymentId: req.body.data.id.toString() } },
+          $addToSet: { payments: { paymentId: req.body.data.id.toString() } },
           paymentStatus: PAYMENT_STATUS[paymentStatusKey],
         },
         { new: true }
