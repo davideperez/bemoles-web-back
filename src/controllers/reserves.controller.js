@@ -61,6 +61,7 @@ async function httpAddNewReserve(req, res) {
           title: `Reserva: ${event.title}`,
           unit_price: event.price,
           quantity: reserve.ticketQuantity,
+          currency_id: "ARS",
         },
       ],
       back_urls: {
@@ -76,8 +77,9 @@ async function httpAddNewReserve(req, res) {
 
     const response = await mercadopago.preferences.create(preference);
     reserve.MPPreferenceId = response.body.id;
-    reserve.paymentLink = response.body.sandbox_init_point;
+    reserve.paymentLink = response.body.init_point;
     reserve.paymentStatus = PAYMENT_STATUS.NOT_PAID;
+    reserve.payments = [];
     console.log({ reserve });
 
     // 3 Se calcula el stock disponible
@@ -98,7 +100,7 @@ async function httpAddNewReserve(req, res) {
     const ticketsAvailable = event.maxAttendance - ticketsReserved;
 
     console.log(
-      `el cupo maximo del evento es: ${event.maxAttendance}, las entradas reservadas: ${ticketsReserved}, la disponibilidad antes de reservar: ${ticketsAvailable}.`
+      `el cupo maximo del evento es: ${event.maxAttendance}, las entradas reservadas: ${ticketsReserved}, la disponibilidad luego de reservar: ${ticketsAvailable}.`
     );
 
     // Si no hay stock:
@@ -195,16 +197,18 @@ async function httpPaymentReserveNotification(req, res) {
       await updateReserveByIdInMongoDB(
         reserve._id,
         {
+          $push: { payments: { paymentId: req.body.data.id.toString() } },
           paymentStatus: PAYMENT_STATUS[paymentStatusKey],
         },
         { new: true }
       );
-      if (PAYMENT_STATUS[paymentStatusKey] === PAYMENT_STATUS.SUCCESS)
+      if (PAYMENT_STATUS[paymentStatusKey] === PAYMENT_STATUS.SUCCESS) {
         await mercadopago.preferences.update({
           id: MPPreferenceId,
           expiration_date_to: getFormatedDate(new Date()),
         });
-      await sendPaymentConfirmationEmail(reserve, reserve.event);
+        await sendPaymentConfirmationEmail(reserve, reserve.event);
+      }
     }
   } catch (err) {
     console.log(
@@ -227,6 +231,34 @@ async function httpGetFeedbackReserve(req, res) {
   }
 }
 
+async function httpGetReservePayment(req, res) {
+  try {
+    const reserve = await getReserve(req.params.id);
+    const payments = await Promise.all(
+      reserve.payments.map(async (p) => {
+        const payment = await mercadopago.payment.findById(p.paymentId);
+        return {
+          _id: p._id,
+          status:
+            PAYMENT_STATUS[adapterMPPaymentStatus(payment.response.status)],
+          total_amount: payment.response.transaction_details.total_paid_amount,
+          net_received_amount:
+            payment.response.transaction_details.net_received_amount,
+          client_email: payment.response.payer.email,
+          client_phone: payment.response.payer.phone,
+          currency_id: payment.response.currency_id,
+          date_approved: payment.response.date_approved,
+          date_created: payment.response.date_created,
+          date_last_updated: payment.response.date_last_updated,
+        };
+      })
+    );
+    res.status(200).send(payments);
+  } catch (err) {
+    console.log("Ha ocurrido un error en la validación del pago - ", err);
+  }
+}
+
 module.exports = {
   httpAddNewReserve,
   httpGetAllReserves,
@@ -235,4 +267,5 @@ module.exports = {
   httpUpdateReserve,
   httpPaymentReserveNotification,
   httpGetFeedbackReserve,
+  httpGetReservePayment,
 };

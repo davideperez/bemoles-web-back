@@ -14,6 +14,9 @@ const reservesSchema = new mongoose.Schema(
             type: String,
             default: 'NOT_PAID',
         },
+        payments: [{
+            paymentId: String,
+        }],
         event: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Event',

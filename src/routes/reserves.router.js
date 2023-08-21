@@ -7,13 +7,15 @@ const {
     httpDeleteReserve,
     httpUpdateReserve,
     httpPaymentReserveNotification,
-    httpGetFeedbackReserve
+    httpGetFeedbackReserve,
+    httpGetReservePayment,
 } = require('../controllers/reserves.controller')
 
 const reservesRouter = express.Router()
 
 reservesRouter.post('/mpnotification', httpPaymentReserveNotification);
 reservesRouter.post('/', httpAddNewReserve);
+reservesRouter.get('/:id/payment/', httpGetReservePayment);
 reservesRouter.get('/feedback', httpGetFeedbackReserve);
 reservesRouter.get('/:id', httpGetReserve);
 reservesRouter.get('/', httpGetAllReserves);
