@@ -55,7 +55,8 @@ async function httpAddNewReserve(req, res) {
     const event = await getEvent(reserve.event);
     console.log(event);
 
-    let preference = {
+    if (event.price) {
+      let preference = {
       items: [
         {
           title: `Reserva: ${event.title}`,
@@ -80,6 +81,9 @@ async function httpAddNewReserve(req, res) {
     reserve.paymentLink = response.body.init_point;
     reserve.paymentStatus = PAYMENT_STATUS.NOT_PAID;
     reserve.payments = [];
+  } else {
+    reserve.paymentStatus = PAYMENT_STATUS.SUCCESS;
+  }
     console.log({ reserve });
 
     // 3 Se calcula el stock disponible
@@ -118,7 +122,7 @@ async function httpAddNewReserve(req, res) {
       $push: { reserves: reserveCreated._id.toString() },
     });
 
-    await sendReserveConfirmationEmail(reserve, event);
+    await sendReserveConfirmationEmail(reserve, event, { isFree: Boolean(!event.price)});
     return res.status(201).json(reserveCreated);
   } catch (err) {
     console.log(err);

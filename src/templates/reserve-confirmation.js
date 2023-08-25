@@ -5,7 +5,7 @@ function getCurrentYear() {
   return new Date().getFullYear();
 }
 
-async function sendReserveConfirmationEmail(reserve, event) {
+async function sendReserveConfirmationEmail(reserve, event, { isFree = false }) {
   const { title: eventTitle, date: eventDate, image } = event;
   const {
     email: receiverEmail,
@@ -186,15 +186,15 @@ async function sendReserveConfirmationEmail(reserve, event) {
                 <h2>Espacio de Cultura y Encuentro</h2>
             </div>
             <p>Hola ${receiverFirstName} ${receiverLastName},</p>
-            <p>Tu reserva fue realizada con éxito y expira en 48hs si no se completa el pago.</p>
-            <p>Para completar tu compra, haz clic en el link de pago.</p>
+            <p>${isFree ? 'Tu reserva fue realizada con éxito. ¡Te esperamos!' : 'Tu reserva fue realizada con éxito y expira en 48hs si no se completa el pago.'}</p>
+            ${isFree ? '' : '<p>Para completar tu compra, haz clic en el link de pago.</p>'}
             <div class="event-info">
                 <img src="${image}" alt="Imagen-del-evento" class="event-image"/>
                 <p><strong>Evento:</strong> ${eventTitle}</p>
                 <p><strong>Fecha:</strong> ${upperCasedDate}</p>
                 <p><strong>Horario:</strong> ${formattedTime}</p>
                 <p><strong>Cantidad de Entradas Reservadas:</strong> ${ticketQuantity}</p>
-                <p><strong>Link de Pago:</strong> ${eventPaymentLink}</p>
+                ${isFree ? '' : '<p><strong>Link de Pago:</strong> ${eventPaymentLink}</p>'}
 
             <div class="footer">
                 <p>&copy; ${currentYear} Espacio de Cultura y Encuentro Los Bemoles. Todos los derechos reservados.</p>
