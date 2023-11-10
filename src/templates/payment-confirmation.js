@@ -1,4 +1,5 @@
 const nodeMailer = require("nodemailer");
+const { formatDatetimeToTimezone } = require("../helpers/convertDatetimeToTimezone");
 require("dotenv").config();
 
 function getCurrentYear() {
@@ -16,7 +17,7 @@ async function sendPaymentConfirmationEmail(reserve, event) {
   const currentYear = getCurrentYear();
 
   // Date and Time formatting:
-  const eventDateTime = new Date(eventDate);
+  const eventDateTime = formatDatetimeToTimezone(eventDate);
 
   const dateOptions = {
     weekday: "long", // Displays the day of the week in long format (e.g., "Miercoles")
