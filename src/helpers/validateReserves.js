@@ -22,35 +22,35 @@ const getExpirationDate = (date) => {
 };
 
 const getFormatedDate = (date) => {
-  // Obtener la fecha y hora actual
-const dateToFormat = new Date(date);
+    // Obtener la fecha y hora actual
+  const dateToFormat = new Date(date);
 
-// Función para formatear un número con ceros a la izquierda
-const formatWithLeadingZeros = (num, length) => {
-  return num.toString().padStart(length, '0');
-};
+  // Función para formatear un número con ceros a la izquierda
+  const formatWithLeadingZeros = (num, length) => {
+    return num.toString().padStart(length, '0');
+  };
 
-// Obtener los componentes de la fecha
-const año = dateToFormat.getFullYear();
-const mes = formatWithLeadingZeros(dateToFormat.getMonth() + 1, 2);
-const dia = formatWithLeadingZeros(dateToFormat.getDate(), 2);
-const hora = formatWithLeadingZeros(dateToFormat.getHours(), 2);
-const minutos = formatWithLeadingZeros(dateToFormat.getMinutes(), 2);
-const segundos = formatWithLeadingZeros(dateToFormat.getSeconds(), 2);
-const milisegundos = formatWithLeadingZeros(dateToFormat.getMilliseconds(), 3);
+  // Obtener los componentes de la fecha
+  const año = dateToFormat.getFullYear();
+  const mes = formatWithLeadingZeros(dateToFormat.getMonth() + 1, 2);
+  const dia = formatWithLeadingZeros(dateToFormat.getDate(), 2);
+  const hora = formatWithLeadingZeros(dateToFormat.getHours(), 2);
+  const minutos = formatWithLeadingZeros(dateToFormat.getMinutes(), 2);
+  const segundos = formatWithLeadingZeros(dateToFormat.getSeconds(), 2);
+  const milisegundos = formatWithLeadingZeros(dateToFormat.getMilliseconds(), 3);
 
-// Obtener la zona horaria en formato +/-HH:mm
-const offset = dateToFormat.getTimezoneOffset();
-const offsetSigno = offset >= 0 ? '-' : '+';
-const offsetHoras = formatWithLeadingZeros(Math.abs(Math.floor(offset / 60)), 2);
-const offsetMinutos = formatWithLeadingZeros(Math.abs(offset) % 60, 2);
-const zonaHoraria = `${offsetSigno}${offsetHoras}:${offsetMinutos}`;
+  // Obtener la zona horaria en formato +/-HH:mm
+  const offset = dateToFormat.getTimezoneOffset();
+  const offsetSigno = offset >= 0 ? '-' : '+';
+  const offsetHoras = formatWithLeadingZeros(Math.abs(Math.floor(offset / 60)), 2);
+  const offsetMinutos = formatWithLeadingZeros(Math.abs(offset) % 60, 2);
+  const zonaHoraria = `${offsetSigno}${offsetHoras}:${offsetMinutos}`;
 
-// Formatear la fecha en el formato deseado
-const nuevoFormato = `${año}-${mes}-${dia}T${hora}:${minutos}:${segundos}.${milisegundos}${zonaHoraria}`;
+  // Formatear la fecha en el formato deseado
+  const nuevoFormato = `${año}-${mes}-${dia}T${hora}:${minutos}:${segundos}.${milisegundos}${zonaHoraria}`;
 
-console.log(nuevoFormato);
-  return nuevoFormato;
+  console.log(nuevoFormato);
+    return nuevoFormato;
 };
 
 module.exports = { getExpirationDate, getFormatedDate, isExpiratedReserve };

@@ -75,11 +75,13 @@ async function login(req, res, next) {
 
 async function postRefreshToken(req, res, next) {
   try {
+    
+    //1 Se extrae el antiguoRefreshToken que viene en las cookies de la solicitud
     const { signedCookies = {} } = req;
     const { refreshToken } = signedCookies;
 
     console.log({refreshToken})
-
+    //2 Si hay un antiguo refreshToken
     if (refreshToken) {
       try {
         //se pasa del token codificado a uno decodificado y se guarda en payload.
@@ -104,6 +106,7 @@ async function postRefreshToken(req, res, next) {
             res.send("Unauthorized");
           } else {
             const token = getToken({ _id: userId });
+            
             // If the refresh token exists, then create new one and replace it.
             const newRefreshToken = getRefreshToken({ _id: userId });
             user.refreshToken[tokenIndex] = { refreshToken: newRefreshToken };

@@ -2,7 +2,6 @@ const passport = require("passport")
 const jwt = require("jsonwebtoken")
 const nodeEnvironmentVariableValue = process.env.NODE_ENV !== "production"
 
-
 const COOKIE_OPTIONS = {
   httpOnly: true,
   // Since localhost is not having https protocol,

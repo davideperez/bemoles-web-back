@@ -19,6 +19,7 @@ async function httpAddNewProject(req, res) {
         if (
           !project.title ||
           !project.category
+          //TBD agregar el chequeo de la info aqui. 
         ) {
           return res.status(400).json({
             error: "Falta cargar una de las propiedades del proyecto.",

@@ -4,11 +4,12 @@ const {
     httpAddNewReserve,
     httpGetAllReserves,
     httpGetReserve,
-    httpDeleteReserve,
-    httpUpdateReserve,
-    httpPaymentReserveNotification,
-    httpGetFeedbackReserve,
     httpGetReservePayment,
+    httpGetFeedbackReserve,
+    httpPaymentReserveNotification,
+    httpCancelReserveOnMercadoPago,
+    httpSetReserveToPaid,
+    httpDeleteReserve,
 } = require('../controllers/reserves.controller')
 
 const reservesRouter = express.Router()
@@ -19,7 +20,8 @@ reservesRouter.get('/:id/payment/', httpGetReservePayment);
 reservesRouter.get('/feedback', httpGetFeedbackReserve);
 reservesRouter.get('/:id', httpGetReserve);
 reservesRouter.get('/', httpGetAllReserves);
-reservesRouter.put('/:id', verifyUser, httpUpdateReserve);
+reservesRouter.put('/:id', verifyUser, httpCancelReserveOnMercadoPago);
+reservesRouter.put('/:id', verifyUser, httpSetReserveToPaid);
 reservesRouter.delete('/:id', verifyUser, httpDeleteReserve);
 
 module.exports = reservesRouter;
