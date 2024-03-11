@@ -9,10 +9,12 @@ const express = require('express')
 const passport = require('passport')
 const bodyParser = require('body-parser')// Se podria desinstalar y usar el de express nativo directamente ??
 const session = require('express-session')
+
 if (process.env.NODE_ENV !== "production") {
   // Load environment variables from .env file in non prod environments
   require("dotenv").config();
 }
+
 const cookieParser = require("cookie-parser");
 const fileUpLoad = require("express-fileupload");
 
@@ -23,6 +25,7 @@ const router = require("./routes/router");
 require("./strategies/JwtStrategy");
 require("./strategies/LocalStrategy");
 require("./authenticate");
+
 // const insertSeeds = require('./seeders')
 
 //-----------------------------------------------------------------------------------------------------//
@@ -46,6 +49,7 @@ const corsOptions = {
   credentials: true,
 };
 
+
 //-----------------------------------------------------------------------------------------------------//
 // Middleware //
 //-----------------------------------------------------------------------------------------------------//
@@ -58,11 +62,12 @@ app.use(express.json()); // permite que los requests http lean jsons.
 //Enables Express to serve static files
 app.use(express.static(path.join(__dirname, "..", "public", "views")));
 
-//Enables express to receive files via forms ??.
+//Enables express to receive files.
 app.use(
   fileUpLoad({
     useTempFiles: true,
     tempFileDir: "/tmp/",
+    //limits: { fileSize: 11 * 1024 * 1024 }
   })
 );
 

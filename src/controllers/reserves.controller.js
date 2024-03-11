@@ -1,49 +1,43 @@
-const mercadopago = require("mercadopago");
-const { PAYMENT_STATUS } = require("../lib/types/enums/paymentStatus");
 const {
-  createReserveByIdInMongoDB,
-  getAllReserves,
+  getFormatedDate,
+  getExpirationDate,
+  isExpiratedReserve,
+} = require("../helpers/validateReserves");
+const mercadopago = require("mercadopago");
+const {
   getReserve,
-  updateReserveByIdInMongoDB,
+  getAllReserves,
   deleteReserveById,
   getReserveByQuery,
+  updateReserveByIdInMongoDB,
+  createReserveByIdInMongoDB,
 } = require("../models/reserves/reserves.model");
-
 const {
   getEvent,
   updateEventByIdInMongoDB,
 } = require("../models/events/events.model");
-
-const {
-  sendReserveConfirmationEmail,
-} = require("../templates/reserve-confirmation");
-
-const { sendStockAlertEmail } = require("../templates/stock-alert");
-const {
-  isExpiratedReserve,
-  getExpirationDate,
-  getFormatedDate,
-} = require("../helpers/validateReserves");
-const { adapterMPPaymentStatus } = require("../adapter/paymentStatus");
 const {
   sendPaymentConfirmationEmail,
 } = require("../templates/payment-confirmation");
+const { sendStockAlertEmail } = require("../templates/stock-alert");
+const { adapterMPPaymentStatus } = require("../adapter/paymentStatus");
+const { PAYMENT_STATUS } = require("../lib/types/enums/paymentStatus");
+const { sendReserveConfirmationEmail } = require("../templates/reserve-confirmation");
 
 mercadopago.configure({
   access_token: process.env.MP_ACCESS_TOKEN,
 });
 
-/*  
-- Recibe los datos de la solicitud de nueva reserva, 
-- crea la "PREFERENCE en MP"(que seria la orden de compra con link de pago) 
-- y actualiza la nueva reserva creada 
- */
+/*  - Para Solicitar el posteo de una nueva reserva en mongodb. */
 
 async function httpAddNewReserve(req, res) {
   try {
+    /* 01 Descarga el body de la solicitud, que es el objeto reserva. */
+
     const reserve = req.body;
 
-    //1 se chequea que la reserva que llego en la solicitud posea todos los campos requeridos.
+    /* 02 Valida que el objeto reserva contenga los campos requeridos. */
+
     if (
       !reserve.firstName ||
       !reserve.lastName ||
@@ -59,14 +53,15 @@ async function httpAddNewReserve(req, res) {
     }
     
     
-    //2 Se carga el evento en cuestion usando el id de evento que venia en el el body de la solicitud de reserva.
+    /* 03 Descarga objeto evento de la DB, este es objeto padre de la reserva. */
+
     const event = await getEvent(reserve.event);
     console.log(event);
     
-    //3 Se crea el link de pago (un mercadopagoREsponse a la preference)
-    //3.1 Si valida que el evento no sea gratis:
+    /* 04 Si el evento tiene precio, se crea una "preference" 
+    con la configuracion para solicitar la creacion de una orden de pago a MP. */
+
     if (event.price) {
-      // Se crea el objeto "preferencia", que son los datos necesarios para pedir a la API de MP un link de pago.
       let preference = {
         items: [
           {
@@ -87,70 +82,83 @@ async function httpAddNewReserve(req, res) {
         expiration_date_to: getFormatedDate(getExpirationDate(new Date())),
       };
     
-    // Se solicita a MP API un objeto mercadopagoResponse que contiene toda la info del "link de pago". 
+    /* 05 Se solicita(await) la creacion (.create()), se recibe y se almacena 
+    (const), de la API de MP, una orden de pago. Se usa la preference antes creada. */
+      
     const response = await mercadopago.preferences.create(preference);
-
-    console.log("//////////////////////////////// Este es la respuesta de MP API al pedido de creacino de link con el objeto preferencias: ",response,"//////////////////////////////////////////////////")
+    console.log("//////////////////////////////// Respuesta de MP API a la Creacion de la reserva: ", reserve.id, response,"//////////////////////////////////////////////////")
     
-    // Se agrega el id del "objeto-preferencia" de MercadoPago a la reserva.
-    reserve.MPPreferenceId = response.body.id;
-    // Se agrega el id del "objeto-preferencia" de MercadoPago a la reserva.
-    reserve.paymentLink = response.body.init_point;
-    // Se setea el el estado del pago como "no pago" en la reserva.
+    /* 06 Se completan las propiedades del objeto reserva con la informacion 
+    de la nueva orden enviada como respuesta por la API de MP. Id de la Preferencia, 
+    Linke de Pago, Estado del Pago, y el array de pagos realizados.*/
+
     reserve.paymentStatus = PAYMENT_STATUS.NOT_PAID;
-    //Se crea el array vacio que contendra los pagos que se realizen en la reserva.
+    reserve.MPPreferenceId = response.body.id;
+    reserve.paymentLink = response.body.init_point;
     reserve.payments = [];
 
-    // Si el precio del evento es 0, es decir es gratis, se anota paymentStatus como SUCCESS.
+    /* 07 Si el precio del evento es 0, es decir es gratis, solo se completa la propiedad "Estado del Pago"*/
+
     } else {
       reserve.paymentStatus = PAYMENT_STATUS.SUCCESS;
     }
-    console.log({ reserve });
-       
 
-    // 4 Se calcula el stock disponible
-    const ticketsReserved = [...event.reserves, reserve].reduce(
-      (reservesLength, reserve) => {
-        const isValidatedReserve =
-          !isExpiratedReserve(reserve.createdAt) ||
+    /* 08 Se calcula el stock de entradas disponible del evento actual */
+
+    /*Se desplegan en un array las reservas del evento y la reserva actual para contar 
+    las ENTRADAS de las reservas confirmadas, con un reduce. */
+    const confirmmedReserves = [...event.reserves, reserve].reduce(
+      (totalConfirmmedReserves, aReserve) => {
+        const isCurrentReserve =
+          // filtro1, no contar las entradas de reservas que expiraron.
+          !isExpiratedReserve(aReserve.createdAt) ||
+          //filtro2, solo contar las entradas de reservas con estado success y pending.
           [PAYMENT_STATUS.PENDING, PAYMENT_STATUS.SUCCESS].includes(
-            reserve.paymentStatus
+            aReserve.paymentStatus
           );
-        const reservesLengthUpdated = reservesLength + (isValidatedReserve ? reserve.ticketQuantity : 0);
-        return reservesLengthUpdated;
+        /* Se acumulan las entras de las reservas que cumplen con las condiciones en totalConfirmmedReserves */
+        const updatedTotalConfirmmedReserves = totalConfirmmedReserves + (isCurrentReserve ? aReserve.ticketQuantity : 0);
+        return updatedTotalConfirmmedReserves;
       },
       0
     );
-    
-    const ticketsAvailable = event.maxAttendance - ticketsReserved;
+    //Se calculan las entradas disponibles.
+    const ticketsAvailable = event.maxAttendance - confirmmedReserves;
     
     console.log(
-      `el cupo maximo del evento es: ${event.maxAttendance}, 
-      las entradas reservadas: ${ticketsReserved}, 
-      la disponibilidad luego de reservar: ${ticketsAvailable}.`
+      `Cupo maximo de entradas del evento es: ${event.maxAttendance}, 
+      Entradas reservadas incluyendo la reserva actual: ${confirmmedReserves}, 
+      Entradas disponibles incluyendo la reserva actual: ${ticketsAvailable}.`
     );
 
-    // 4.1 Si no hay stock se manda un mensaje de alerta:
+    /* 09.1 Si no hay stock de entradas disponibles se manda un mensaje de alerta: */
+
     if (ticketsAvailable < 0)
       return res.status(409).json({ message: "El cupo esta completo" });
     
-    // 4.2 Si el stock es menor a 10 :
+    // 09.2 Si el stock es menor a 10 :
     if (ticketsAvailable < 10)
-      await sendStockAlertEmail(event, ticketsAvailable); // TO DO: Notificar a Gabriel cuando quedan menos de 10 entradas
+      await sendStockAlertEmail(event, ticketsAvailable);
 
 
-    //////////  5 Se crea la reserva en la DB  //////////
+    /* 10 Se crea la reserva en la DB de Reservas y se guarda la respuesta en reserveCreated..*/
+
     const reserveCreated = await createReserveByIdInMongoDB(reserve);
   
-    ////////// 6 se agrega la reserva al evento //////////
+    /* 11 Se actualiza el evento en la DB agregando el id de la reserva recientemente creada.*/
+
     await updateEventByIdInMongoDB(reserve.event, {
       $push: { reserves: reserveCreated._id.toString() },
     });
 
-    // 7 Se envia el mail de reserva.
+    /* 12 Se notifica al que reservo, via email que la reserva fue realizada con exito.*/
+
     await sendReserveConfirmationEmail(reserve, event, { isFree: Boolean(!event.price)});
 
+    /* 13 Se notifica al reservas@losbemoles.com.ar sobre la nueva reserva realizada.*/ //TBD
 
+    /* 14 Se devuelve el header http 200 y la reserva recientemente creada.*/
+  
     return res.status(201).json(reserveCreated);
   } catch (err) {
     console.log(err);
@@ -182,18 +190,9 @@ async function httpGetReserve(req, res) {
   }
 }
 
-async function httpUpdateReserve(req, res) {
-  try {
-    return res.status(201).json(reserveUpdated);
-  } catch (err) {
-    return res.status(500).json({
-      error: err.message,
-    });
-  }
-}
-
 //UPDATE
 
+//TBD
 async function httpCancelReserveOnMercadoPago(req, res) {
   try {
     const reserveId = req.params.id
@@ -212,15 +211,21 @@ async function httpCancelReserveOnMercadoPago(req, res) {
   }
 }
 
+//TBD
 async function httpSetReserveToPaid(req, res) {
   try {
+
+    // 01 se copia el id de la reserva enviada por parametros.
     const reserveId = req.params.id
-    const reserveToCancel = await getReserve(reserveId)
+
+    //02 Se pide la reserva a la DB.
+    const reserveToUpdate = await getReserve(reserveId)
     
-    // mandar update de reserva expirada en MercadoPago. 
+    //03 Se manda el update de reserva expirada a MercadoPago. //TBD
+    
 
-
-    // marcar la reserva como paga en la db.
+    // Se marca la reserva como paga en la db.
+    reserveToUpdate.paymentStatus = PAYMENT_STATUS.SUCCESS
     
     //se actualiza el stock de reservas en el evento??
    
@@ -233,17 +238,7 @@ async function httpSetReserveToPaid(req, res) {
   }
 }
 
-
 //Para que MP le avise al sistema que se realizo un pago sobre una orden.
-/* 
-Objetos en juego:
-
-reserve
-  payment: mercadopago.payment
-  merchantOrder: mercadopago.merchant_orders
-  preference: merchantOrder.body
-
-  */
 
   async function httpPaymentReserveNotification(req, res) {
   try {
@@ -327,16 +322,23 @@ reserve
 }
 
 
+// Consulta el estado del pago de la reserva???
 
 async function httpGetFeedbackReserve(req, res) {
   try {
+    // 01 Si no hay id de pago en la query
     if (req.query.payment_id === "null") throw new Error('No se ha encontrado el pago');
     const payment = await mercadopago.payment.findById(req.query.payment_id);
     // const merchantOrder = await mercadopago.merchant_orders.findById(payment.body.order.id);
     // const preferenceId = merchantOrder.body.preference_id;
+    
+    //02
     if (!payment?.body?.status) throw new Error("No se ha encontrado el pago");
+    
     const status = payment.body.status;
+    
     const paymentStatusKey = adapterMPPaymentStatus(status);
+    //
     res.status(200).send({ status: PAYMENT_STATUS[paymentStatusKey] });
   } catch (err) {
     console.log("Ha ocurrido un error en la validación del pago - ", err);
@@ -376,20 +378,25 @@ async function httpGetReservePayment(req, res) {
   }
 }
 
+//TBD
+
 async function httpDeleteReserve(req, res) {
   try {
-    // Se trae la reserva con el id que vino en la solicitud/request.
-    const reserveFind = await getReserve(req.params.id);
 
-    //Se valida q exista el evento y si no es asi se envia error.
-    if (!reserveFind) return res.status(400).send({ success: false, message:"La reserva no existe." });
+    // 01 Se trae la reserva con el id que vino en la request.
+    const reserve = await getReserve(req.params.id);
 
-    // Se cancela el pago en MercadoPago. TBD.
-    // TBD // // TBD // // TBD //
+    //02 Se valida q exista la reserva y si no es asi se envia error.
+    if (!reserve) return res.status(400).send({ success: false, message:"La reserva no existe." });
 
-    // Se borra la reserva de la db.
-    await deleteReserveById(req.params.id);
+    //03 Si es pago de MP, se cancela el pago en MercadoPago. //TBD.
 
+
+
+    //04 Se borra la reserva de la db.
+    await deleteReserveById(reserve.id);
+
+    //05 Se devuelve un htttp 200, un true y un mensaje de exito.
     return res.status(200).json({ success: true, message: "La reserva ha sido ELIMINADA" });
   
   } catch (err) {
@@ -404,7 +411,6 @@ module.exports = {
   httpAddNewReserve,
   httpGetAllReserves,
   httpGetReserve,
-  httpUpdateReserve,
   httpPaymentReserveNotification,
   httpGetFeedbackReserve,
   httpGetReservePayment,
